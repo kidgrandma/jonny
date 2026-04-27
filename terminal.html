@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WORKSUCKS.EXE</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:    #0c0c0c;
+  --blue:  #4499ff;
+  --bdim:  #1a5fcc;
+  --red:   #ff3333;
+  --rdim:  #cc1111;
+  --white: #e8e8e8;
+  --muted: #444;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  line-height: 1.55;
+  overflow-x: hidden;
+}
+
+.term-window {
+  max-width: 780px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+/* ── TITLE BAR ── */
+.tbar {
+  background: #1e1e1e;
+  padding: 7px 14px;
+  display: flex; align-items: center; gap: 7px;
+  position: sticky; top: 0; z-index: 10;
+  border-bottom: 1px solid #333;
+}
+.dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.dr { background: #ff5f57; }
+.dy { background: #febc2e; }
+.dg { background: #28c840; }
+.ttitle {
+  flex: 1; text-align: center; font-size: 11px;
+  color: #888; margin-left: -38px; letter-spacing: 0.05em;
+}
+
+/* ── BODY ── */
+.tbody { padding: 18px 14px 40px; }
+
+pre {
+  white-space: pre;
+  overflow-x: auto;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── PROMPT ── */
+.p {
+  display: block;
+  color: var(--white);
+  margin: 1.4rem 0 0.4rem;
+}
+.p::before { content: '$ '; color: var(--bdim); }
+
+/* ── COLOUR HELPERS ── */
+.g  { color: var(--blue); }
+.gd { color: var(--bdim); }
+.y  { color: var(--red); }
+.r  { color: var(--red); }
+.c  { color: var(--blue); }
+.w  { color: var(--white); font-weight: bold; }
+.o  { color: var(--red); }
+.m  { color: var(--muted); }
+.inv  { background: var(--blue); color: var(--bg);   padding: 0 2px; font-weight: bold; }
+.invr { background: var(--red);  color: var(--white); padding: 0 2px; font-weight: bold; }
+.invy { background: var(--blue); color: var(--bg);   padding: 0 2px; font-weight: bold; }
+
+/* ── CURSOR ── */
+.cur::after { content: '█'; animation: bl 1s step-end infinite; }
+@keyframes bl { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* ── BACK BUTTON ── */
+.back {
+  display: inline-block; background: none;
+  border: 1px solid var(--bdim); color: var(--blue);
+  font-family: inherit; font-size: 12px;
+  padding: 4px 12px; cursor: pointer;
+  text-decoration: none; margin-bottom: 1rem;
+  letter-spacing: 0.05em;
+}
+.back:hover { background: var(--blue); color: var(--bg); }
+
+/* ── SECTION DIVIDER ── */
+.div { color: var(--muted); }
+
+/* ── MOBILE ── */
+@media (max-width: 480px) {
+  html, body { font-size: 11px; }
+  .tbody { padding: 12px 10px 36px; }
+}
+</style>
+</head>
+<body>
+<div class="term-window">
+
+  <div class="tbar">
+    <span class="dot dr"></span>
+    <span class="dot dy"></span>
+    <span class="dot dg"></span>
+    <span class="ttitle">worksucks_brief.sh — jonny@terminal</span>
+  </div>
+
+  <div class="tbody">
+
+    <a href="investor.html" class="back">← BACK TO FANCY VERSION</a>
+
+<pre class="gd">
++------------------------------------------+
+|   WORKSUCKS LLC  //  INVESTOR BRIEF      |
+|   *** FOR JONNY GORDON ONLY ***          |
+|   MAY - SEPT 2026  //  SEED ROUND OPEN  |
++------------------------------------------+
+</pre>
+
+<span class="p">./boot.sh</span>
+<pre>
+Initializing<span class="g">.................................</span>OK
+Loading budget data<span class="g">........................</span>OK
+Rendering ASCII art<span class="g">........................</span>OK
+Verifying investor is Jonny Gordon<span class="g">.........</span>OK
+</pre>
+
+<img src="worksuckslogo-white.svg" alt="WORKSUCKS" style="display:block;width:clamp(200px,70%,420px);height:auto;margin:1rem 0;">
+
+<pre class="gd">
+         _________
+        |  >_     |
+        |         |
+        |_________|
+           |   |
+       ~~~~|~~~|~~~~
+         TERMINAL
+</pre>
+
+<pre>
+<span class="invr">  [!] CONFIDENTIAL — AUTHORIZED ACCESS ONLY  </span>
+<span class="invr">  [!] IF YOU ARE NOT JONNY GORDON, CLOSE TAB  </span>
+</pre>
+
+<span class="p">cat pitch.txt</span>
+<pre>
+<span class="inv">  EXACTLY WHAT HAPPENS AFTER YOU WRITE THE CHECK.  </span>
+
+  Five phases. Five months. Three live activations.
+  Seed round closed. Long-form game launched.
+</pre>
+
+
+<!-- ══ PHASES ══════════════════════════════════════ -->
+<span class="p">./phases.sh --all</span>
+<pre class="gd">
+==========================================
+              PHASE BREAKDOWN
+==========================================
+</pre>
+
+<pre>
+<span class="c">┌─ PHASE 01 ──────────────────────────────┐</span>
+<span class="c">│</span> DIT LA LAUNCH                           <span class="c">│</span>
+<span class="c">│</span> Period  : <span class="y">May 1 – 17</span>                    <span class="c">│</span>
+<span class="c">│</span> Budget  : <span class="o">$11,000</span>  Remaining: <span class="w">$19,000</span>  <span class="c">│</span>
+<span class="c">└─────────────────────────────────────────┘</span>
+  ├─ DIT LA event execution
+  ├─ Sponsor sprint
+  ├─ Website live + Partiful
+  ├─ Game dev v1 playtest
+  └─ Seed investor outreach opens
+
+<span class="c">┌─ PHASE 02 ──────────────────────────────┐</span>
+<span class="c">│</span> NYC PREP + TRAVEL                       <span class="c">│</span>
+<span class="c">│</span> Period  : <span class="y">May 18 – Jun 16</span>              <span class="c">│</span>
+<span class="c">│</span> Budget  : <span class="o">$9,000</span>   Remaining: <span class="w">$10,000</span>  <span class="c">│</span>
+<span class="c">└─────────────────────────────────────────┘</span>
+  ├─ NYC sponsorship sprint
+  ├─ Rhizome venue scout
+  ├─ DIT NYC event (Jun 16)
+  └─ Seed investor close push
+
+<span class="c">┌─ PHASE 03 ──────────────────────────────┐</span>
+<span class="c">│</span> FWB FEST + COOLING                      <span class="c">│</span>
+<span class="c">│</span> Period  : <span class="y">July</span>                          <span class="c">│</span>
+<span class="c">│</span> Budget  : <span class="o">$7,000</span>   Remaining: <span class="w">$3,000</span>   <span class="c">│</span>
+<span class="c">└─────────────────────────────────────────┘</span>
+  ├─ FWB Fest activation
+  ├─ DIT NYC 2 sponsorship build
+  ├─ Close seed round
+  └─ Long-form artist acquisition begins
+
+<span class="c">┌─ PHASE 04 ──────────────────────────────┐</span>
+<span class="c">│</span> NYC DIT 2                               <span class="c">│</span>
+<span class="c">│</span> Period  : <span class="y">August</span>                        <span class="c">│</span>
+<span class="c">│</span> Budget  : <span class="invy"> SPONSORED </span> offset by sponsors <span class="c">│</span>
+<span class="c">└─────────────────────────────────────────┘</span>
+  ├─ Second NYC activation
+  ├─ Long-form game final prep
+  ├─ Seed round officially closed
+  └─ Series A prep begins
+
+<span class="c">┌─ PHASE 05 ──────────────────────────────┐</span>
+<span class="c">│</span> LONG-FORM DEBUT               <span class="g">★ PAYOFF</span>  <span class="c">│</span>
+<span class="c">│</span> Period  : <span class="y">September</span>                     <span class="c">│</span>
+<span class="c">│</span> Budget  : <span class="g">$0 COST</span>  Revenue: <span class="inv"> $30,000+ </span> <span class="c">│</span>
+<span class="c">└─────────────────────────────────────────┘</span>
+  ├─ NYC paid long-form game launch
+  ├─ 200 players
+  ├─ Zero IRL production budget needed
+  └─ Self-funding model PROVEN
+</pre>
+
+
+<!-- ══ BUDGET ══════════════════════════════════════ -->
+<span class="p">cat budget.csv | column -t</span>
+<pre class="gd">
+==========================================
+             BUDGET BREAKDOWN
+==========================================
+</pre>
+
+<pre>
++---------------------+------+------+-----+-----+-------+
+| LINE ITEM           |  MAY |  JUN | JUL | AUG | TOTAL |
++---------------------+------+------+-----+-----+-------+
+| Ongoing Operations  | <span class="w">$7k</span>  | <span class="w">$7k</span>  | <span class="w">$7k</span> | <span class="m">$3k</span> | <span class="w">$24k</span>  |
+| Team/Tools/Recur.   |      |      |     |     |       |
++---------------------+------+------+-----+-----+-------+
+| Event Prod+Travel   | <span class="o">$3k</span>  | <span class="o">$2k</span>  |  <span class="m">--</span> |  <span class="m">--</span> | <span class="o">$5k</span>   |
+| DIT LA / DIT NYC    |      |      |     |     |       |
++---------------------+------+------+-----+-----+-------+
+| Admin + Legal       | <span class="w">$1k</span>  |  <span class="m">--</span>  |  <span class="m">--</span> |  <span class="m">--</span> | <span class="w">$1k</span>   |
+| One-time, May only  |      |      |     |     |       |
++---------------------+------+------+-----+-----+-------+
+| <span class="inv">MONTHLY TOTAL</span>       | <span class="inv">$11k</span> | <span class="inv"> $9k</span> | <span class="inv">$7k</span>| <span class="inv">~$3k</span>| <span class="inv">$30k</span>  |
++---------------------+------+------+-----+-----+-------+
+| Cash Remaining      | <span class="g">$19k</span> | <span class="g">$10k</span> | <span class="g">$3k</span>|  <span class="m">--</span> |  <span class="m">--</span>   |
++---------------------+------+------+-----+-----+-------+
+
+<span class="m"> * Aug event costs covered by sponsorship revenue
+ * Sept has zero budget — player fees fund everything</span>
+</pre>
+
+
+<!-- ══ MILESTONES ═══════════════════════════════════ -->
+<span class="p">./milestones.sh --timeline</span>
+<pre class="gd">
+==========================================
+               MILESTONES
+==========================================
+</pre>
+
+<pre>
+<span class="y">▓▓▓ MAY ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
+
+  [<span class="y">WIP</span>] May  5  DIT Website Live
+              Launch + Partiful integration
+
+  [<span class="m">---</span>] May  7  Game Dev v1 — Internal Playtest
+              First full internal review
+
+  [<span class="y">WIP</span>] May 15  DIT LA Sponsors Secured
+              Product + cash sponsors
+
+  [<span class="w">★★★</span>] May 17  <span class="inv"> DIT LA — EVENT EXECUTED </span>
+              First activation
+
+  [<span class="y">WIP</span>] May 27  Seed Outreach — 2x $25K
+              Two closes → $50K SAFE target
+
+<span class="y">▓▓▓ JUNE ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
+
+  [<span class="m">---</span>] Jun  2  DIT NYC — Travel + Scout
+              Rhizome + venue locked
+
+  [<span class="m">---</span>] Jun 11  NYC Sponsor Sprint Closes
+              NYC product sponsors confirmed
+
+  [<span class="w">★★★</span>] Jun 16  <span class="inv"> DIT NYC — EVENT EXECUTED </span>
+              Second activation
+
+<span class="y">▓▓▓ JULY ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
+
+  [<span class="c">PLN</span>] Jul     FWB Fest Activation
+              Brand presence + community
+
+<span class="y">▓▓▓ AUGUST ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
+
+  [<span class="g">TGT</span>] Aug     <span class="inv"> SEED ROUND — CLOSED </span>
+              $50,000+ SAFE  |  HARD DEADLINE
+
+  [<span class="c">PLN</span>] Aug     DIT NYC 2 — Executed
+              Third activation
+
+<span class="y">▓▓▓ SEPTEMBER ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
+
+  [<span class="g">TGT</span>] Sep     <span class="inv"> LONG-FORM GAME — DEBUT </span>
+              200 players x $150 = $30,000
+
+<span class="y">▓▓▓ LATE 2026 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓</span>
+
+  [<span class="m">MAP</span>] ???     Series A — Begin Process
+              Deck + outreach, backed by Sept
+</pre>
+
+
+<!-- ══ TEAM ════════════════════════════════════════ -->
+<span class="p">cat team.txt</span>
+<pre class="gd">
+==========================================
+          RESPONSIBLE ADULTS
+==========================================
+</pre>
+
+<pre>
+<span class="w">PAIZLEY</span> ....................... FOUNDER / LEAD
+  ├─ Event Production (DIT LA + NYC)
+  ├─ Investor Relations (Seed)
+  ├─ Artist Briefs + Contracts
+  ├─ Social Assets + Content
+  ├─ FWB Fest Activation
+  ├─ Seed Round Close <span class="c">(co-lead)</span>
+  └─ Series A Prep
+
+<span class="w">ALEC + SHAWN</span> ................. TECH / GAME DEV
+  ├─ DIT Website + App
+  ├─ Game Development
+  ├─ NYC Long-Form Game Build
+  ├─ Event Production <span class="m">(support)</span>
+  └─ Social Assets <span class="m">(support)</span>
+
+<span class="w">KELLER + JAHAN</span> .............. BIZ DEV / PARTNERS
+  ├─ Sponsorship — LA Sprint
+  ├─ Sponsorship — NYC Sprint
+  ├─ NYC Long-Form Sponsorship
+  ├─ Seed Round Close <span class="c">(co-lead)</span>
+  └─ Investor Relations <span class="m">(support)</span>
+</pre>
+
+
+<!-- ══ REVENUE ═══════════════════════════════════════ -->
+<span class="p">./revenue_model.sh --sept</span>
+<pre class="gd">
+==========================================
+           LONGFORM TEST REVENUE
+==========================================
+</pre>
+
+<pre>
+<span class="w">200</span> players  x  <span class="w">$150</span>  =  <span class="inv"> $30,000 </span>
+
+<span class="g">  [$$$$$$$$$$$$$$$$$$$$$$$$$$$$$]</span>
+<span class="g">  [                             ]</span>
+<span class="g">  [  SEPTEMBER REVENUE TARGET   ]</span>
+<span class="g">  [                             ]</span>
+<span class="g">  [$$$$$$$$$$$$$$$$$$$$$$$$$$$$$]</span>
+
+  Player-fee funded only.
+  Zero production budget required.
+  Self-sustaining from launch.
+  Proof of concept for Series A.
+</pre>
+
+
+<!-- ══ FUNDING ═══════════════════════════════════════ -->
+<span class="p">cat funding_schedule.txt</span>
+<pre class="gd">
+==========================================
+             FUNDING SCHEDULE
+==========================================
+</pre>
+
+<pre>
+<span class="r">
+    ( ╥ _ ╥ )   HELP WE'RE POOR
+      |     |
+     /       \
+</span>
+
++----------+----------+-----------------+
+| DATE     | AMOUNT   | STATUS          |
++----------+----------+-----------------+
+| <span class="invr"> Apr 30 </span> | <span class="r">  $5,000</span>  | <span class="r">[ DUE NOW ]</span>      |
+| <span class="invy"> May  4 </span> | <span class="y">  $6,000</span>  | <span class="y">[ COMING UP ]</span>    |
+| <span class="c"> May 26 </span> | <span class="c">  $9,000</span>  | <span class="c">[ PLANNED ]</span>      |
+| <span class="g"> Jun 25 </span> | <span class="g"> $10,000</span>  | <span class="g">[ FINAL TRANCHE ]</span>|
++----------+----------+-----------------+
+|          | <span class="inv"> TOTAL: $30,000 </span>              |
++----------+------------------------------+
+</pre>
+
+
+<pre class="gd">
+==========================================
+  WORKSUCKS LLC
+  FOR JONNY GORDON ONLY  //  MAY-SEPT 2026
+==========================================
+</pre>
+
+<pre class="m">EOF<span class="cur"></span>
+</pre>
+
+  </div><!-- end tbody -->
+</div><!-- end term-window -->
+</body>
+</html>

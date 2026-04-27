@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WORKSUCKS — Investor Briefing</title>
+<link rel="preload" href="jonny-bg.png" as="image">
+<link rel="preload" href="worksuckslogo-white.svg" as="image">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:     #070707;
+  --surf:   #101010;
+  --surf2:  #161616;
+  --border: #1e1e1e;
+  --pink:   #888;
+  --yellow: #e0e0e0;
+  --orange: #e0e0e0;
+  --green:  #e0e0e0;
+  --text:   #e0e0e0;
+  --muted:  #555;
+}
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Tahoma, Geneva, sans-serif;
+  overflow-x: hidden;
+  cursor: url('cursor.png'), auto;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── BACKGROUND ─── */
+#bg-wrap {
+  position: fixed; inset: 0;
+  z-index: -2;
+}
+.bg-slide {
+  position: absolute; inset: 0;
+  background: url('jonny-bg.png') center/cover no-repeat;
+  will-change: opacity;
+}
+#bg-scrim {
+  position: fixed; inset: 0;
+  z-index: -1;
+  background: rgba(0,0,0,0.72);
+}
+
+/* scanline — cheap CSS-only, no SVG filter */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px);
+  pointer-events: none;
+  z-index: 9000;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 2rem;
+  background: rgba(7,7,7,0.88);
+  border-bottom: 1px solid var(--border);
+}
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a {
+  font-size: 0.65rem; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--muted);
+  text-decoration: none; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--text); }
+
+/* ─── HERO ─── */
+#hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  text-align: center;
+  padding: 8rem 2rem 6rem;
+  position: relative;
+  border-bottom: 1px solid var(--border);
+}
+.hero-eyebrow {
+  font-size: 0.65rem; letter-spacing: 0.3em;
+  color: var(--muted); text-transform: uppercase;
+  margin-bottom: 2.5rem;
+}
+.hero-logo {
+  width: clamp(280px, 60vw, 640px);
+  height: auto; display: block;
+  margin-bottom: 1.2rem;
+  animation: glitch 9s infinite;
+}
+@keyframes glitch {
+  0%,88%,100% { transform: none; }
+  90%  { transform: skew(-1.5deg) translateX(-3px); }
+  92%  { transform: skew(1deg) translateX(3px); }
+  94%  { transform: none; }
+}
+.hero-headline {
+  font-size: clamp(1.1rem, 3vw, 2rem);
+  font-weight: 600; line-height: 1.15;
+  max-width: 740px; margin-bottom: 1.5rem;
+}
+.hero-body {
+  font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+  color: var(--muted); line-height: 1.9; max-width: 460px;
+}
+.scroll-hint {
+  position: absolute; bottom: 2.5rem; left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.6rem; letter-spacing: 0.25em; color: var(--muted);
+  animation: bob 2.2s ease-in-out infinite;
+}
+@keyframes bob {
+  0%,100% { transform: translateX(-50%) translateY(0); }
+  50%     { transform: translateX(-50%) translateY(7px); }
+}
+
+/* ─── SHARED ─── */
+.wrap { max-width: 1080px; margin: 0 auto; padding: 6rem 2rem; }
+.label {
+  font-size: 0.6rem; letter-spacing: 0.35em;
+  text-transform: uppercase; color: var(--pink); margin-bottom: 0.75rem;
+}
+.sec-title {
+  font-size: clamp(1.4rem, 3.5vw, 2.4rem);
+  font-weight: 700; letter-spacing: -0.03em;
+  line-height: 1.0; margin-bottom: 3rem;
+}
+hr.rule {
+  border: none; border-top: 1px solid var(--border);
+  max-width: 1080px; margin: 0 auto;
+}
+.fi { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.fi.on { opacity: 1; transform: none; }
+
+/* ─── PHASES ─── */
+.phases-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+  gap: 1px; background: var(--border); border: 1px solid var(--border);
+}
+.phase-card {
+  background: var(--surf); padding: 1.75rem 1.5rem;
+  transition: background 0.18s; touch-action: manipulation;
+}
+.phase-card:hover { background: var(--surf2); }
+.pc-num {
+  font-size: 0.6rem; letter-spacing: 0.2em;
+  color: var(--muted); text-transform: uppercase; margin-bottom: 0.75rem;
+}
+.pc-name { font-size: 1rem; font-weight: 600; line-height: 1.25; margin-bottom: 0.3rem; }
+.pc-period { font-size: 0.68rem; color: var(--pink); margin-bottom: 1rem; }
+.pc-milestone { font-size: 0.78rem; color: var(--muted); line-height: 1.55; margin-bottom: 1.5rem; }
+.pc-footer {
+  border-top: 1px solid var(--border); padding-top: 1rem;
+  display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem;
+}
+.pc-budget { font-weight: 700; font-size: 1rem; color: var(--orange); }
+.pc-remaining { font-size: 0.65rem; color: var(--muted); }
+.pc-remaining .v { color: var(--text); }
+.phase-card.payoff { border-top: 2px solid var(--green); }
+.phase-card.payoff .pc-budget { color: var(--green); }
+
+/* ─── BUDGET TABLE ─── */
+.bt-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 2rem; }
+.bt { min-width: 620px; border: 1px solid var(--border); }
+.bt-row {
+  display: grid;
+  grid-template-columns: 210px repeat(4, 1fr) 110px;
+  border-bottom: 1px solid var(--border);
+}
+.bt-row:last-child { border-bottom: none; }
+.bt-cell {
+  padding: 1rem 1.1rem;
+  display: flex; flex-direction: column; justify-content: center;
+  font-size: 0.78rem; color: var(--text);
+  border-right: 1px solid var(--border);
+}
+.bt-cell:last-child { border-right: none; }
+.bt-head { background: rgba(255,255,255,0.02); }
+.bt-head .bt-cell {
+  font-size: 0.6rem; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--muted);
+  padding: 0.75rem 1.1rem; font-weight: 400;
+}
+.bt-lname { font-size: 0.82rem; font-weight: 500; color: var(--text); }
+.bt-lsub  { font-size: 0.6rem; color: var(--muted); margin-top: 0.2rem; }
+.bt-val   { font-weight: 700; }
+.bt-ann   { font-size: 0.58rem; color: var(--pink); font-weight: 400; margin-top: 0.2rem; }
+.bt-nil   { color: var(--muted); opacity: 0.35; font-size: 0.75rem; }
+.bt-event-val { color: var(--orange); font-weight: 700; }
+.bt-dim-val   { color: var(--muted); }
+.bt-tcol { border-left: 2px solid var(--border) !important; }
+.bt-total { background: rgba(255,255,255,0.025); border-top: 1px solid rgba(255,255,255,0.07); }
+.bt-total .bt-cell { font-weight: 700; }
+.bt-total .bt-lname { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.bt-remain { background: rgba(0,0,0,0.15); }
+.bt-remain .bt-cell { font-weight: 400; color: var(--muted); }
+.bt-remain .bt-lname { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; }
+.bt-remain-val { color: var(--text) !important; font-weight: 600 !important; }
+.bt-footnote { font-size: 0.6rem; color: var(--muted); margin-top: 1rem; line-height: 1.8; }
+
+/* ─── TIMELINE ─── */
+.timeline { position: relative; padding-left: 1.75rem; margin-top: 2.5rem; }
+.timeline::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 1px; background: var(--border);
+}
+.tl-item { position: relative; margin-bottom: 1.75rem; padding-left: 1.5rem; }
+.tl-item::before {
+  content: ''; position: absolute; left: -0.32rem; top: 0.38rem;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--border); border: 1px solid var(--muted);
+}
+.tl-item.s-inprogress::before { background: var(--text); border-color: var(--text); animation: blink 2s infinite; }
+.tl-item.s-target::before     { background: var(--text); border-color: var(--text); }
+.tl-item.s-upcoming::before   { background: var(--surf2);  border-color: var(--muted); }
+.tl-item.s-planning::before   { background: rgba(136,136,136,0.3); border-color: var(--pink); }
+.tl-item.s-roadmap::before    { background: #2a2a2a; border-color: #333; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.35} }
+.tl-date   { font-size: 0.62rem; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 0.2rem; }
+.tl-name   { font-size: 0.88rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.tl-target { font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem; }
+.badge {
+  display: inline-block; font-size: 0.55rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.15rem 0.45rem; border-radius: 2px;
+}
+.b-up  { background: rgba(255,255,255,0.06); color: var(--muted); }
+.b-wip { background: rgba(255,255,255,0.08); color: var(--text); }
+.b-tgt { background: rgba(255,255,255,0.08); color: var(--text); }
+.b-pln { background: rgba(255,255,255,0.06); color: var(--pink); }
+.b-map { background: rgba(255,255,255,0.04); color: var(--muted); }
+
+/* ─── TEAM ─── */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1px; background: var(--border); border: 1px solid var(--border);
+}
+.team-card { background: var(--surf); padding: 2rem 1.75rem; }
+.tc-name   { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.25rem; }
+.tc-role   { font-size: 0.62rem; letter-spacing: 0.18em; color: var(--pink); text-transform: uppercase; margin-bottom: 1.5rem; }
+.tc-items  { display: flex; flex-direction: column; }
+.tc-item   { display: flex; align-items: center; gap: 0.55rem; font-size: 0.78rem; color: var(--muted); padding: 0.35rem 0; border-bottom: 1px solid var(--border); }
+.tc-item:last-child { border-bottom: none; }
+.dot       { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.d-lead    { background: var(--pink); }
+.d-colead  { background: var(--yellow); }
+.d-support { background: #333; }
+
+/* ─── REVENUE CARD ─── */
+#math { border-top: 1px solid var(--border); }
+#math .wrap { padding-top: 3rem; padding-bottom: 3rem; }
+.rev-card {
+  background: var(--surf); border: 1px solid var(--border);
+  padding: 1.5rem 1.75rem; display: flex; flex-direction: column; gap: 0.6rem;
+}
+.rev-top {
+  display: flex; align-items: baseline; justify-content: space-between;
+  flex-wrap: wrap; gap: 0.75rem 2rem;
+}
+.rev-label { font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+.rev-eq    { font-size: 1rem; font-weight: 700; }
+.re-num    { color: var(--text); }
+.re-dim    { color: var(--muted); font-weight: 400; }
+.re-result { color: var(--green); }
+.rev-note  { font-size: 0.65rem; color: var(--muted); line-height: 1.7; }
+
+/* ─── FUNDING / CTA ─── */
+#cta {
+  padding: 6rem 2rem; border-top: 1px solid var(--border);
+  position: relative; overflow: hidden; text-align: center;
+}
+#cta-glow {
+  position: absolute; width: 700px; height: 700px;
+  background: none;
+  top: 50%; left: 50%; transform: translate(-50%,-50%);
+  pointer-events: none;
+}
+.cta-eyebrow { font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); margin-bottom: 2rem; position: relative; }
+.cta-needs-title {
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 700; letter-spacing: -0.04em; line-height: 0.9;
+  margin-bottom: 3.5rem; position: relative; color: var(--text);
+}
+.cta-needs-title span { color: var(--pink); }
+.funding-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1px; background: var(--border); border: 1px solid var(--border);
+  max-width: 860px; margin: 0 auto 2.5rem;
+}
+.fund-card {
+  background: var(--surf); padding: 2.5rem 1.5rem;
+  display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
+  transition: background 0.18s; touch-action: manipulation;
+}
+.fund-card:hover { background: var(--surf2); }
+.fund-card.urgent { border-top: 2px solid var(--orange); }
+.fund-date   { font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+.fund-amount { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700; line-height: 1; color: var(--text); }
+.fund-card.urgent .fund-amount { color: var(--orange); }
+.fund-card.soon   .fund-amount { color: var(--yellow); }
+.fund-card.mid    .fund-amount { color: var(--pink); }
+.fund-card.later  .fund-amount { color: var(--green); }
+.fund-tag { font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.2rem 0.6rem; border-radius: 2px; }
+.fund-tag.t-urgent { background: rgba(255,255,255,0.1); color: var(--text); }
+.fund-tag.t-soon   { background: rgba(255,255,255,0.07); color: var(--muted); }
+.fund-tag.t-mid    { background: rgba(255,255,255,0.07); color: var(--muted); }
+.fund-tag.t-later  { background: rgba(255,255,255,0.07); color: var(--muted); }
+.fund-total { font-size: 0.8rem; color: var(--muted); letter-spacing: 0.1em; position: relative; }
+.fund-total span { color: var(--text); font-weight: 700; }
+
+/* ─── FOOTER ─── */
+footer {
+  padding: 1.5rem 2rem; text-align: center;
+  border-top: 1px solid var(--border);
+  font-size: 0.6rem; color: #2a2a2a; letter-spacing: 0.12em;
+}
+
+/* ─── FONT MIX ─── */
+.hero-headline, .cta-needs-title, .tc-name, .fund-amount, .rev-eq, .pc-budget, .bt-cell
+  { font-family: 'Times New Roman', Times, serif; }
+
+.hero-eyebrow, .label, .cta-eyebrow, .badge, .tc-role, .fund-tag, .bt-ann, .bt-footnote, .scroll-hint, footer
+  { font-family: 'Comic Sans MS', 'Comic Sans', cursive; }
+
+.nav-links a, .pc-period, .tl-date, .tl-target, .rev-label, .fund-date, .bt-head .bt-cell, .bt-lsub
+  { font-family: 'Century Gothic', Century, 'Apple Gothic', sans-serif; }
+
+.hero-body, .pc-milestone, .pc-remaining, .tc-item, .rev-note, .fund-total, .bt-lname
+  { font-family: Tahoma, Geneva, sans-serif; }
+
+.sec-title { font-family: 'Comic Sans MS', 'Comic Sans', cursive; }
+
+/* ─── MODE BUTTON ─── */
+.mode-btn {
+  font-family: 'Comic Sans MS', cursive; font-size: 0.7rem; font-weight: bold;
+  color: #000; background: var(--text);
+  border: 2px solid #000; padding: 0.35rem 0.75rem;
+  text-decoration: none; letter-spacing: 0.05em;
+  box-shadow: 2px 2px 0 #000; cursor: url('cursor.png'), auto;
+  transition: transform 0.1s, box-shadow 0.1s; white-space: nowrap;
+}
+.mode-btn:hover  { transform: translate(-1px,-1px); box-shadow: 3px 3px 0 #000; }
+.mode-btn:active { transform: translate(1px,1px);   box-shadow: 1px 1px 0 #000; }
+
+/* ─── RESPONSIVE ─── */
+@media (pointer: coarse) { body { cursor: auto; } }
+
+@media (max-width: 768px) {
+  .wrap { padding: 4rem 1.25rem; }
+  nav { padding: 0.85rem 1.25rem; }
+  nav img { height: 18px; }
+  .nav-links { display: none; }
+  #hero { padding: 5.5rem 1.5rem 4rem; }
+  .hero-logo { width: clamp(200px, 78vw, 480px); margin-bottom: 1.5rem; }
+  .hero-eyebrow { margin-bottom: 1.5rem; }
+  .hero-headline { font-size: clamp(1.4rem, 6vw, 2.2rem); margin-bottom: 1.25rem; }
+  .phases-grid { grid-template-columns: repeat(2, 1fr); }
+  .team-grid { grid-template-columns: 1fr; }
+  .rev-top { flex-direction: column; gap: 0.5rem; }
+  .rev-eq  { font-size: 0.9rem; }
+  .bt-scroll::after {
+    content: '← scroll →'; display: block; text-align: center;
+    font-family: 'Comic Sans MS', cursive; font-size: 0.58rem;
+    letter-spacing: 0.15em; color: var(--muted); margin-top: 0.5rem;
+  }
+  .funding-grid { grid-template-columns: repeat(2, 1fr); max-width: 100%; }
+  .fund-card { padding: 1.75rem 1rem; }
+  .fund-amount { font-size: clamp(1.5rem, 6vw, 2rem); }
+  .cta-needs-title { font-size: clamp(1.6rem, 7vw, 3rem); margin-bottom: 2.5rem; }
+  .sec-title { margin-bottom: 2rem; }
+}
+
+@media (max-width: 480px) {
+  .wrap { padding: 3.5rem 1rem; }
+  .phases-grid { grid-template-columns: 1fr; }
+  .funding-grid { grid-template-columns: repeat(2, 1fr); }
+  .fund-card { padding: 1.5rem 0.875rem; }
+  .fund-amount { font-size: clamp(1.3rem, 7vw, 1.8rem); }
+  #hero { padding: 5rem 1rem 3.5rem; }
+  .scroll-hint { bottom: 1.5rem; }
+}
+
+@media (hover: none) {
+  .phase-card:active { background: var(--surf2); }
+  .fund-card:active  { background: var(--surf2); }
+  .team-card:active  { background: var(--surf2); }
+  .tl-item { -webkit-tap-highlight-color: transparent; }
+}
+</style>
+</head>
+<body>
+
+<div id="bg-wrap"><div class="bg-slide"></div></div>
+<div id="bg-scrim"></div>
+
+<nav>
+  <img src="worksuckslogo-white.svg" alt="WORKSUCKS" style="height:22px;width:auto;display:block;">
+  <ul class="nav-links">
+    <li><a href="#phases">Phases</a></li>
+    <li><a href="#budget">Budget</a></li>
+    <li><a href="#milestones">Timeline</a></li>
+    <li><a href="#team">Team</a></li>
+    <li><a href="#cta">Funding</a></li>
+  </ul>
+  <a href="terminal.html" class="mode-btn">I CAN'T READ</a>
+</nav>
+
+<section id="hero">
+  <p class="hero-eyebrow">FOR JONNY GORDON ONLY</p>
+  <img src="worksuckslogo-white.svg" alt="WORKSUCKS" class="hero-logo">
+  <h2 class="hero-headline">EXACTLY WHAT HAPPENS AFTER<br>YOU WRITE THE CHECK.</h2>
+  <p class="hero-body">Five phases · Five months · Three live activations<br>Seed round closed · Long-form game launched</p>
+  <div class="scroll-hint">↓ &nbsp; scroll &nbsp; ↓</div>
+</section>
+
+<div id="phases">
+  <div class="wrap fi">
+    <p class="label">Phase breakdown</p>
+    <div class="phases-grid">
+
+      <div class="phase-card">
+        <p class="pc-num">Phase 01</p>
+        <h3 class="pc-name">DIT LA Launch</h3>
+        <p class="pc-period">May 1 – 17</p>
+        <p class="pc-milestone">DIT LA event execution · Sponsor sprint · Website live · Game dev v1 playtest · Seed investor outreach opens</p>
+        <div class="pc-footer">
+          <span class="pc-budget">$11,000</span>
+          <span class="pc-remaining">Remaining: <span class="v">$19,000</span></span>
+        </div>
+      </div>
+
+      <div class="phase-card">
+        <p class="pc-num">Phase 02</p>
+        <h3 class="pc-name">NYC Prep + Travel</h3>
+        <p class="pc-period">May 18 – Jun 16</p>
+        <p class="pc-milestone">NYC sponsorship sprint · Rhizome venue scout · DIT NYC event (Jun 16) · Seed investor close push</p>
+        <div class="pc-footer">
+          <span class="pc-budget">$9,000</span>
+          <span class="pc-remaining">Remaining: <span class="v">$10,000</span></span>
+        </div>
+      </div>
+
+      <div class="phase-card">
+        <p class="pc-num">Phase 03</p>
+        <h3 class="pc-name">FWB Fest + Cooling</h3>
+        <p class="pc-period">July</p>
+        <p class="pc-milestone">FWB Fest activation · DIT NYC 2 sponsorship build · Close seed round · Long-form artist acquisition begins</p>
+        <div class="pc-footer">
+          <span class="pc-budget">$7,000</span>
+          <span class="pc-remaining">Remaining: <span class="v">$3,000</span></span>
+        </div>
+      </div>
+
+      <div class="phase-card">
+        <p class="pc-num">Phase 04</p>
+        <h3 class="pc-name">NYC DIT 2</h3>
+        <p class="pc-period">August</p>
+        <p class="pc-milestone">Second NYC activation · Long-form game final prep · Seed round officially closed · Series A prep begins</p>
+        <div class="pc-footer">
+          <span class="pc-budget" style="color:var(--yellow)">Sponsored</span>
+          <span class="pc-remaining" style="font-size:0.62rem">Offset by sponsors</span>
+        </div>
+      </div>
+
+      <div class="phase-card payoff">
+        <p class="pc-num">Phase 05</p>
+        <h3 class="pc-name">Long-Form Debut</h3>
+        <p class="pc-period">September</p>
+        <p class="pc-milestone">NYC paid long-form game launch · 200 players · No required IRL production budget · Self-funding model proven</p>
+        <div class="pc-footer">
+          <span class="pc-budget">$0 cost</span>
+          <span class="pc-remaining">Revenue: <span class="v" style="color:var(--green)">$30,000+</span></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<hr class="rule">
+
+<div id="budget">
+  <div class="wrap fi">
+    <p class="label">Budget breakdown</p>
+    <h2 class="sec-title">WHERE'S THE<br>MONEY GOING?</h2>
+    <div class="bt-scroll">
+      <div class="bt">
+        <div class="bt-row bt-head">
+          <div class="bt-cell"></div>
+          <div class="bt-cell">MAY</div>
+          <div class="bt-cell">JUN</div>
+          <div class="bt-cell">JUL</div>
+          <div class="bt-cell">AUG *</div>
+          <div class="bt-cell bt-tcol">TOTAL</div>
+        </div>
+        <div class="bt-row">
+          <div class="bt-cell">
+            <span class="bt-lname">Ongoing Operations</span>
+            <span class="bt-lsub">Team · Tools · Recurring costs</span>
+          </div>
+          <div class="bt-cell"><span class="bt-val">$7,000</span></div>
+          <div class="bt-cell"><span class="bt-val">$7,000</span></div>
+          <div class="bt-cell"><span class="bt-val">$7,000</span></div>
+          <div class="bt-cell"><span class="bt-val bt-dim-val">$3,000</span></div>
+          <div class="bt-cell bt-tcol"><span class="bt-val">$24,000</span></div>
+        </div>
+        <div class="bt-row">
+          <div class="bt-cell">
+            <span class="bt-lname">Event Production &amp; Travel</span>
+            <span class="bt-lsub">Venue · Production · Artist fees · Transport</span>
+          </div>
+          <div class="bt-cell">
+            <span class="bt-event-val">$3,000</span>
+            <span class="bt-ann">↳ DIT LA · May 17</span>
+          </div>
+          <div class="bt-cell">
+            <span class="bt-event-val">$2,000</span>
+            <span class="bt-ann">↳ DIT NYC · Jun 16 + Travel</span>
+          </div>
+          <div class="bt-cell"><span class="bt-nil">—</span></div>
+          <div class="bt-cell"><span class="bt-nil">—</span></div>
+          <div class="bt-cell bt-tcol"><span class="bt-val bt-event-val">$5,000</span></div>
+        </div>
+        <div class="bt-row">
+          <div class="bt-cell">
+            <span class="bt-lname">Admin &amp; Legal Setup</span>
+            <span class="bt-lsub">One-time setup costs · May only</span>
+          </div>
+          <div class="bt-cell"><span class="bt-val">$1,000</span></div>
+          <div class="bt-cell"><span class="bt-nil">—</span></div>
+          <div class="bt-cell"><span class="bt-nil">—</span></div>
+          <div class="bt-cell"><span class="bt-nil">—</span></div>
+          <div class="bt-cell bt-tcol"><span class="bt-val">$1,000</span></div>
+        </div>
+        <div class="bt-row bt-total">
+          <div class="bt-cell"><span class="bt-lname">Monthly Total</span></div>
+          <div class="bt-cell"><span class="bt-val">$11,000</span></div>
+          <div class="bt-cell"><span class="bt-val">$9,000</span></div>
+          <div class="bt-cell"><span class="bt-val">$7,000</span></div>
+          <div class="bt-cell"><span class="bt-val bt-dim-val">~$3,000</span></div>
+          <div class="bt-cell bt-tcol"><span class="bt-val" style="color:var(--orange)">$30,000</span></div>
+        </div>
+        <div class="bt-row bt-remain">
+          <div class="bt-cell"><span class="bt-lname">Cash Remaining</span></div>
+          <div class="bt-cell"><span class="bt-remain-val">$19,000</span></div>
+          <div class="bt-cell"><span class="bt-remain-val">$10,000</span></div>
+          <div class="bt-cell"><span class="bt-remain-val">$3,000</span></div>
+          <div class="bt-cell"><span class="bt-nil">—</span></div>
+          <div class="bt-cell bt-tcol"><span class="bt-nil">—</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="bt-footnote">
+      * August event costs offset by sponsorship revenue — not drawn from the $30K.<br>
+      September not included — long-form game self-funded via player fees.
+    </p>
+  </div>
+</div>
+
+<hr class="rule">
+
+<div id="milestones">
+  <div class="wrap fi">
+    <p class="label">Key milestones</p>
+    <h2 class="sec-title">Milestones.</h2>
+    <div class="timeline">
+
+      <div class="tl-item s-inprogress">
+        <p class="tl-date">May 5</p>
+        <p class="tl-name">DIT Website Live <span class="badge b-wip">In Progress</span></p>
+        <p class="tl-target">Launch + Partiful integration</p>
+      </div>
+
+      <div class="tl-item s-upcoming">
+        <p class="tl-date">May 7</p>
+        <p class="tl-name">Game Dev v1 — Internal Playtest <span class="badge b-up">Upcoming</span></p>
+        <p class="tl-target">First full internal review</p>
+      </div>
+
+      <div class="tl-item s-inprogress">
+        <p class="tl-date">May 15</p>
+        <p class="tl-name">DIT LA Sponsors Secured <span class="badge b-wip">In Progress</span></p>
+        <p class="tl-target">Product + cash sponsors</p>
+      </div>
+
+      <div class="tl-item s-upcoming">
+        <p class="tl-date">May 17</p>
+        <p class="tl-name">DIT LA — Event Executed <span class="badge b-up">Upcoming</span></p>
+        <p class="tl-target">First activation</p>
+      </div>
+
+      <div class="tl-item s-inprogress">
+        <p class="tl-date">May 27</p>
+        <p class="tl-name">Seed Outreach — 2× $25K targets <span class="badge b-wip">In Progress</span></p>
+        <p class="tl-target">Two closes targeted for $50K SAFE</p>
+      </div>
+
+      <div class="tl-item s-upcoming">
+        <p class="tl-date">Jun 2</p>
+        <p class="tl-name">DIT NYC — Travel + Rhizome Scout <span class="badge b-up">Upcoming</span></p>
+        <p class="tl-target">Venue locked</p>
+      </div>
+
+      <div class="tl-item s-upcoming">
+        <p class="tl-date">Jun 11</p>
+        <p class="tl-name">NYC Sponsor Sprint Closes <span class="badge b-up">Upcoming</span></p>
+        <p class="tl-target">NYC product sponsors confirmed</p>
+      </div>
+
+      <div class="tl-item s-upcoming">
+        <p class="tl-date">Jun 16</p>
+        <p class="tl-name">DIT NYC — Event Executed <span class="badge b-up">Upcoming</span></p>
+        <p class="tl-target">Second activation</p>
+      </div>
+
+      <div class="tl-item s-planning">
+        <p class="tl-date">July</p>
+        <p class="tl-name">FWB Fest Activation <span class="badge b-pln">Planning</span></p>
+        <p class="tl-target">Brand presence + community build</p>
+      </div>
+
+      <div class="tl-item s-target">
+        <p class="tl-date">August</p>
+        <p class="tl-name">Seed Round — CLOSED <span class="badge b-tgt">Target</span></p>
+        <p class="tl-target">$50,000+ SAFE · deadline hard</p>
+      </div>
+
+      <div class="tl-item s-planning">
+        <p class="tl-date">August</p>
+        <p class="tl-name">DIT NYC 2 — Executed <span class="badge b-pln">Planning</span></p>
+        <p class="tl-target">Third activation</p>
+      </div>
+
+      <div class="tl-item s-target">
+        <p class="tl-date">September</p>
+        <p class="tl-name">NYC Long-Form Game — DEBUT <span class="badge b-tgt">Target</span></p>
+        <p class="tl-target">200 players × $150 = $30,000 revenue</p>
+      </div>
+
+      <div class="tl-item s-roadmap">
+        <p class="tl-date">Late 2026</p>
+        <p class="tl-name">Series A — Begin Process <span class="badge b-map">Roadmap</span></p>
+        <p class="tl-target">Deck + outreach, backed by Sept proof</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<hr class="rule">
+
+<div id="team">
+  <div class="wrap fi">
+    <p class="label">The team</p>
+    <h2 class="sec-title">WHO ARE THE<br>RESPONSIBLE ADULTS?</h2>
+    <div class="team-grid">
+
+      <div class="team-card">
+        <p class="tc-name">Paizley</p>
+        <p class="tc-role">Founder / Lead</p>
+        <div class="tc-items">
+          <div class="tc-item"><div class="dot d-lead"></div>Event Production — DIT LA + NYC</div>
+          <div class="tc-item"><div class="dot d-lead"></div>Investor Relations (Seed)</div>
+          <div class="tc-item"><div class="dot d-lead"></div>Artist Briefs &amp; Contracts</div>
+          <div class="tc-item"><div class="dot d-lead"></div>Social Assets &amp; Content</div>
+          <div class="tc-item"><div class="dot d-lead"></div>FWB Fest Activation</div>
+          <div class="tc-item"><div class="dot d-colead"></div>Seed Round Close (co-lead)</div>
+          <div class="tc-item"><div class="dot d-lead"></div>Series A Prep</div>
+        </div>
+      </div>
+
+      <div class="team-card">
+        <p class="tc-name">Alec &amp; Shawn</p>
+        <p class="tc-role">Tech / Game Dev</p>
+        <div class="tc-items">
+          <div class="tc-item"><div class="dot d-lead"></div>DIT Website &amp; App</div>
+          <div class="tc-item"><div class="dot d-lead"></div>Game Development</div>
+          <div class="tc-item"><div class="dot d-lead"></div>NYC Long-Form Game Build</div>
+          <div class="tc-item"><div class="dot d-support"></div>Event Production (support)</div>
+          <div class="tc-item"><div class="dot d-support"></div>Social Assets (support)</div>
+        </div>
+      </div>
+
+      <div class="team-card">
+        <p class="tc-name">Keller &amp; Jahan</p>
+        <p class="tc-role">Biz Dev / Partnerships</p>
+        <div class="tc-items">
+          <div class="tc-item"><div class="dot d-lead"></div>Sponsorship — LA Sprint</div>
+          <div class="tc-item"><div class="dot d-lead"></div>Sponsorship — NYC Sprint</div>
+          <div class="tc-item"><div class="dot d-lead"></div>NYC Long-Form Sponsorship</div>
+          <div class="tc-item"><div class="dot d-colead"></div>Seed Round Close (co-lead)</div>
+          <div class="tc-item"><div class="dot d-support"></div>Investor Relations (support)</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="math">
+  <div class="wrap fi">
+    <div class="rev-card">
+      <div class="rev-top">
+        <span class="rev-label">Longform Test Revenue</span>
+        <span class="rev-eq">
+          <span class="re-num">200</span>
+          <span class="re-dim"> players × </span>
+          <span class="re-num">$150</span>
+          <span class="re-dim"> = </span>
+          <span class="re-result">$30,000</span>
+        </span>
+      </div>
+      <p class="rev-note">Player-fee funded only. Zero production budget required. Self-sustaining from launch. Proof of concept for Series A.</p>
+    </div>
+  </div>
+</div>
+
+<div id="cta">
+  <div id="cta-glow"></div>
+  <p class="cta-eyebrow">WORKSUCKS LLC · Seed Round · For Jonny Gordon</p>
+  <h2 class="cta-needs-title">HELP<br>WE'RE POOR <span>;(</span></h2>
+  <div class="funding-grid">
+    <div class="fund-card urgent">
+      <div class="fund-date">April 30</div>
+      <div class="fund-amount">$5,000</div>
+      <div class="fund-tag t-urgent">Due Now</div>
+    </div>
+    <div class="fund-card soon">
+      <div class="fund-date">May 4</div>
+      <div class="fund-amount">$6,000</div>
+      <div class="fund-tag t-soon">Coming Up</div>
+    </div>
+    <div class="fund-card mid">
+      <div class="fund-date">May 26</div>
+      <div class="fund-amount">$9,000</div>
+      <div class="fund-tag t-mid">Planned</div>
+    </div>
+    <div class="fund-card later">
+      <div class="fund-date">June 25</div>
+      <div class="fund-amount">$10,000</div>
+      <div class="fund-tag t-later">Final Tranche</div>
+    </div>
+  </div>
+  <p class="fund-total">Total investment: &nbsp;<span>$30,000</span></p>
+</div>
+
+<footer>WORKSUCKS LLC &nbsp;·&nbsp; FOR JONNY GORDON ONLY &nbsp;·&nbsp; MAY–SEPT 2026</footer>
+
+<script>
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    entry.target.classList.add('on');
+    io.unobserve(entry.target);
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.fi').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
