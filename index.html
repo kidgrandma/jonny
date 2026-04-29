@@ -2,769 +2,960 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WORKSUCKS — Investor Briefing</title>
-<link rel="preload" href="jonny-bg.png" as="image">
-<link rel="preload" href="worksuckslogo-white.svg" as="image">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>WHERE'S JONNY?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,700;1,700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+
+/* ── RESET ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:     #070707;
-  --surf:   #101010;
-  --surf2:  #161616;
-  --border: #1e1e1e;
-  --pink:   #888;
-  --yellow: #e0e0e0;
-  --orange: #e0e0e0;
-  --green:  #e0e0e0;
-  --text:   #e0e0e0;
-  --muted:  #555;
+  --gold:    #C9A84C;
+  --gold-lt: #F0D980;
+  --coral:   #E05A3A;
+  --teal:    #00BFA6;
+  --bg:      #05050E;
+  --surface: #0B0B1C;
+  --surface2:#111128;
+  --cream:   #F0EBE0;
+  --text:    #DDD8CC;
+  --muted:   rgba(221,216,204,0.45);
+  --border:  rgba(201,168,76,0.2);
+  --border2: rgba(221,216,204,0.07);
 }
 
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-
-body {
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
   background: var(--bg);
   color: var(--text);
-  font-family: Tahoma, Geneva, sans-serif;
-  overflow-x: hidden;
-  cursor: url('cursor.png'), auto;
-  -webkit-font-smoothing: antialiased;
+  font-family: 'Space Grotesk', sans-serif;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* ─── BACKGROUND ─── */
-#bg-wrap {
-  position: fixed; inset: 0;
-  z-index: -2;
+* { cursor: url('./cursor.png') 50 50, auto !important; }
+
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--border); }
+
+/* ── GATE ── */
+#gate {
+  position: fixed; inset: 0; z-index: 600;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg);
+  transition: opacity 0.7s ease;
 }
-.bg-slide {
-  position: absolute; inset: 0;
-  background: url('jonny-bg.png') center/cover no-repeat;
-  will-change: opacity;
+#gate.gone { opacity: 0; pointer-events: none; }
+
+.gate-close {
+  position: absolute; top: 24px; right: 28px;
+  background: none; border: none;
+  color: rgba(240,235,224,0.45); font-size: 32px;
+  font-weight: 300; line-height: 1;
+  transition: color 0.2s; z-index: 2;
 }
-#bg-scrim {
-  position: fixed; inset: 0;
-  z-index: -1;
-  background: rgba(0,0,0,0.72);
+.gate-close:hover { color: var(--cream); }
+
+.gate-intro-img {
+  height: 82vh; max-width: 90vw;
+  object-fit: contain; display: block;
+  filter: drop-shadow(0 16px 60px rgba(0,0,0,0.8));
+  animation: gateFloat 3.5s ease-in-out infinite;
+}
+@keyframes gateFloat {
+  0%,100%{ transform: translateY(0); }
+  50%    { transform: translateY(-14px); }
 }
 
-/* scanline — cheap CSS-only, no SVG filter */
-body::after {
-  content: '';
-  position: fixed; inset: 0;
-  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px);
-  pointer-events: none;
-  z-index: 9000;
-}
-
-/* ─── NAV ─── */
-nav {
-  position: fixed; top: 0; left: 0; right: 0;
-  z-index: 100;
+/* ── HUD ── */
+#hud {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 1rem 2rem;
-  background: rgba(7,7,7,0.88);
-  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  background: linear-gradient(180deg, rgba(5,5,14,0.92) 0%, transparent 100%);
+  pointer-events: none; opacity: 0; transition: opacity 0.6s;
 }
-.nav-links { display: flex; gap: 2rem; list-style: none; }
-.nav-links a {
-  font-size: 0.65rem; letter-spacing: 0.15em;
-  text-transform: uppercase; color: var(--muted);
-  text-decoration: none; transition: color 0.2s;
+#hud.show { opacity: 1; pointer-events: auto; }
+.hud-logo { height: 16px; opacity: 0.35; filter: brightness(0) invert(1); }
+.hud-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 0.2em; color: rgba(201,168,76,0.55); }
+.hud-right { display: flex; align-items: center; gap: 16px; }
+.hud-count { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); }
+.hud-count span { font-family: 'Bebas Neue', sans-serif; font-size: 18px; }
+.hint-btn {
+  padding: 6px 16px; background: transparent;
+  border: 1px solid rgba(201,168,76,0.35); color: rgba(201,168,76,0.6);
+  font-family: 'Space Grotesk', sans-serif; font-size: 9px;
+  font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase;
+  transition: all 0.2s;
 }
-.nav-links a:hover { color: var(--text); }
+.hint-btn:hover { border-color: var(--gold); color: var(--gold); }
 
-/* ─── HERO ─── */
-#hero {
-  min-height: 100vh;
+/* Drag nudge */
+#drag-nudge {
+  position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
+  z-index: 200; pointer-events: none;
+  font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase;
+  color: rgba(221,216,204,0.32);
+  display: flex; align-items: center; gap: 10px;
+  opacity: 0; transition: opacity 0.6s;
+}
+#drag-nudge.show { opacity: 1; }
+.nudge-arrow { animation: nudgePulse 1.6s ease-in-out infinite; }
+.nudge-arrow:nth-child(1) { animation-delay: -0.3s; }
+.nudge-arrow:nth-child(3) { animation-delay:  0.3s; }
+@keyframes nudgePulse { 0%,100%{opacity:0.15} 50%{opacity:0.7} }
+
+/* ── SCENE ── */
+#scene-wrap { position: fixed; inset: 0; overflow: hidden; }
+#scene {
+  position: absolute; top: 0; left: 0;
+  width: 1920px; height: 1080px;
+  background: url('./assets/jonny-world.jpg') left top / cover no-repeat, #06060F;
+  will-change: transform;
+  user-select: none; -webkit-user-select: none;
+  touch-action: none;
+}
+
+/* ── JONNY SPOTS ── */
+.jonny-spot {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  width: 55px;
+  z-index: 10;
+  transition: filter 0.2s;
+}
+.jonny-spot img {
+  width: 100%; display: block; pointer-events: none;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+  transition: filter 0.25s, transform 0.25s;
+}
+.jonny-spot:hover img {
+  filter: drop-shadow(0 4px 24px rgba(201,168,76,0.6)) drop-shadow(0 0 8px rgba(201,168,76,0.4));
+  transform: scale(1.07) translateY(-5px);
+}
+.jonny-spot.hinting img {
+  animation: hintPulse 0.5s ease-in-out infinite alternate;
+}
+@keyframes hintPulse {
+  from { filter: drop-shadow(0 0 12px rgba(201,168,76,0.7)); }
+  to   { filter: drop-shadow(0 0 32px rgba(201,168,76,1)) drop-shadow(0 0 60px rgba(201,168,76,0.4)); }
+}
+.jonny-spot.found img { opacity: 0.4; }
+.jonny-spot.found::after {
+  content: '✓';
+  position: absolute; top: -8px; left: 50%; transform: translateX(-50%);
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--teal); color: #fff;
+  font-size: 12px; font-weight: 700; line-height: 22px; text-align: center;
+  box-shadow: 0 2px 10px rgba(0,191,166,0.5); z-index: 5;
+}
+.jonny-spot.bursting { animation: foundBurst 0.45s ease forwards; }
+@keyframes foundBurst {
+  0%  { transform: translate(-50%,-100%) scale(1); }
+  40% { transform: translate(-50%,-100%) scale(1.3) rotate(5deg); filter: brightness(3); }
+  100%{ transform: translate(-50%,-100%) scale(1); }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   WIN98 / BSOD MODAL SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* BSOD blue backdrop */
+.modal-wrap {
+  position: fixed; inset: 0; z-index: 400;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  background: rgba(0,0,0,0); pointer-events: none;
+  transition: background 0.2s;
+  font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
+}
+.modal-wrap.open {
+  background: rgba(0, 0, 170, 0.94);
+  pointer-events: auto;
+}
+
+/* Win98 window */
+.modal {
+  background: #c0c0c0;
+  border: 0;
+  box-shadow:
+    inset  2px  2px 0 #dfdfdf,
+    inset -2px -2px 0 #404040,
+    inset  1px  1px 0 #ffffff,
+    inset -1px -1px 0 #808080;
+  width: 100%; max-width: 820px; max-height: 88vh;
   display: flex; flex-direction: column;
-  justify-content: center; align-items: center;
-  text-align: center;
-  padding: 8rem 2rem 6rem;
-  position: relative;
-  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  transform: scale(0.95) translateY(10px); opacity: 0;
+  transition: transform 0.15s, opacity 0.15s;
+  overflow: hidden;
 }
-.hero-eyebrow {
-  font-size: 0.65rem; letter-spacing: 0.3em;
-  color: var(--muted); text-transform: uppercase;
-  margin-bottom: 2.5rem;
+.modal-wrap.open .modal { transform: scale(1) translateY(0); opacity: 1; }
+
+/* Title bar */
+.modal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 3px 4px 4px;
+  background: linear-gradient(90deg, #000080 0%, #1084d0 100%);
+  border-bottom: none;
+  flex-shrink: 0;
+  gap: 6px;
 }
-.hero-logo {
-  width: clamp(280px, 60vw, 640px);
-  height: auto; display: block;
-  margin-bottom: 1.2rem;
-  animation: glitch 9s infinite;
+.modal-eyebrow { display: none; }
+.modal-title {
+  font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
+  font-size: 11px; font-weight: bold;
+  color: #ffffff; line-height: 1;
+  letter-spacing: 0; padding: 1px 2px;
+  flex: 1;
 }
-@keyframes glitch {
-  0%,88%,100% { transform: none; }
-  90%  { transform: skew(-1.5deg) translateX(-3px); }
-  92%  { transform: skew(1deg) translateX(3px); }
-  94%  { transform: none; }
+/* Win98 close button */
+.modal-close {
+  width: 16px; height: 14px; flex-shrink: 0;
+  background: #c0c0c0;
+  color: #000; font-size: 10px; font-weight: bold;
+  font-family: 'Tahoma', Arial, sans-serif;
+  line-height: 12px; text-align: center; padding: 0;
+  border: 1px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+  box-shadow: inset -1px -1px 0 #404040, inset 1px 1px 0 #dfdfdf;
+  transition: none;
 }
-.hero-headline {
-  font-size: clamp(1.1rem, 3vw, 2rem);
-  font-weight: 600; line-height: 1.15;
-  max-width: 740px; margin-bottom: 1.5rem;
-}
-.hero-body {
-  font-size: clamp(0.75rem, 1.5vw, 0.9rem);
-  color: var(--muted); line-height: 1.9; max-width: 460px;
-}
-.scroll-hint {
-  position: absolute; bottom: 2.5rem; left: 50%;
-  transform: translateX(-50%);
-  font-size: 0.6rem; letter-spacing: 0.25em; color: var(--muted);
-  animation: bob 2.2s ease-in-out infinite;
-}
-@keyframes bob {
-  0%,100% { transform: translateX(-50%) translateY(0); }
-  50%     { transform: translateX(-50%) translateY(7px); }
+.modal-close:hover { background: #c0c0c0; color: #000; }
+.modal-close:active {
+  border-color: #808080 #ffffff #ffffff #808080;
+  box-shadow: inset 1px 1px 0 #404040, inset -1px -1px 0 #dfdfdf;
+  padding: 1px 0 0 1px;
 }
 
-/* ─── SHARED ─── */
-.wrap { max-width: 1080px; margin: 0 auto; padding: 6rem 2rem; }
-.label {
-  font-size: 0.6rem; letter-spacing: 0.35em;
-  text-transform: uppercase; color: var(--pink); margin-bottom: 0.75rem;
+/* Scrollable body — white sunken content area */
+.modal-body {
+  overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch;
+  flex: 1;
+  padding: 6px;
+  background: #c0c0c0;
 }
-.sec-title {
-  font-size: clamp(1.4rem, 3.5vw, 2.4rem);
-  font-weight: 700; letter-spacing: -0.03em;
-  line-height: 1.0; margin-bottom: 3rem;
-}
-hr.rule {
-  border: none; border-top: 1px solid var(--border);
-  max-width: 1080px; margin: 0 auto;
-}
-.fi { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
-.fi.on { opacity: 1; transform: none; }
-
-/* ─── PHASES ─── */
-.phases-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
-  gap: 1px; background: var(--border); border: 1px solid var(--border);
-}
-.phase-card {
-  background: var(--surf); padding: 1.75rem 1.5rem;
-  transition: background 0.18s; touch-action: manipulation;
-}
-.phase-card:hover { background: var(--surf2); }
-.pc-num {
-  font-size: 0.6rem; letter-spacing: 0.2em;
-  color: var(--muted); text-transform: uppercase; margin-bottom: 0.75rem;
-}
-.pc-name { font-size: 1rem; font-weight: 600; line-height: 1.25; margin-bottom: 0.3rem; }
-.pc-period { font-size: 0.68rem; color: var(--pink); margin-bottom: 1rem; }
-.pc-milestone { font-size: 0.78rem; color: var(--muted); line-height: 1.55; margin-bottom: 1.5rem; }
-.pc-footer {
-  border-top: 1px solid var(--border); padding-top: 1rem;
-  display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem;
-}
-.pc-budget { font-weight: 700; font-size: 1rem; color: var(--orange); }
-.pc-remaining { font-size: 0.65rem; color: var(--muted); }
-.pc-remaining .v { color: var(--text); }
-.phase-card.payoff { border-top: 2px solid var(--green); }
-.phase-card.payoff .pc-budget { color: var(--green); }
-
-/* ─── BUDGET TABLE ─── */
-.bt-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 2rem; }
-.bt { min-width: 620px; border: 1px solid var(--border); }
-.bt-row {
-  display: grid;
-  grid-template-columns: 210px repeat(4, 1fr) 110px;
-  border-bottom: 1px solid var(--border);
-}
-.bt-row:last-child { border-bottom: none; }
-.bt-cell {
-  padding: 1rem 1.1rem;
-  display: flex; flex-direction: column; justify-content: center;
-  font-size: 0.78rem; color: var(--text);
-  border-right: 1px solid var(--border);
-}
-.bt-cell:last-child { border-right: none; }
-.bt-head { background: rgba(255,255,255,0.02); }
-.bt-head .bt-cell {
-  font-size: 0.6rem; letter-spacing: 0.2em;
-  text-transform: uppercase; color: var(--muted);
-  padding: 0.75rem 1.1rem; font-weight: 400;
-}
-.bt-lname { font-size: 0.82rem; font-weight: 500; color: var(--text); }
-.bt-lsub  { font-size: 0.6rem; color: var(--muted); margin-top: 0.2rem; }
-.bt-val   { font-weight: 700; }
-.bt-ann   { font-size: 0.58rem; color: var(--pink); font-weight: 400; margin-top: 0.2rem; }
-.bt-nil   { color: var(--muted); opacity: 0.35; font-size: 0.75rem; }
-.bt-event-val { color: var(--orange); font-weight: 700; }
-.bt-dim-val   { color: var(--muted); }
-.bt-tcol { border-left: 2px solid var(--border) !important; }
-.bt-total { background: rgba(255,255,255,0.025); border-top: 1px solid rgba(255,255,255,0.07); }
-.bt-total .bt-cell { font-weight: 700; }
-.bt-total .bt-lname { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-.bt-remain { background: rgba(0,0,0,0.15); }
-.bt-remain .bt-cell { font-weight: 400; color: var(--muted); }
-.bt-remain .bt-lname { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; }
-.bt-remain-val { color: var(--text) !important; font-weight: 600 !important; }
-.bt-footnote { font-size: 0.6rem; color: var(--muted); margin-top: 1rem; line-height: 1.8; }
-
-/* ─── TIMELINE ─── */
-.timeline { position: relative; padding-left: 1.75rem; margin-top: 2.5rem; }
-.timeline::before {
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-  width: 1px; background: var(--border);
-}
-.tl-item { position: relative; margin-bottom: 1.75rem; padding-left: 1.5rem; }
-.tl-item::before {
-  content: ''; position: absolute; left: -0.32rem; top: 0.38rem;
-  width: 7px; height: 7px; border-radius: 50%;
-  background: var(--border); border: 1px solid var(--muted);
-}
-.tl-item.s-inprogress::before { background: var(--text); border-color: var(--text); animation: blink 2s infinite; }
-.tl-item.s-target::before     { background: var(--text); border-color: var(--text); }
-.tl-item.s-upcoming::before   { background: var(--surf2);  border-color: var(--muted); }
-.tl-item.s-planning::before   { background: rgba(136,136,136,0.3); border-color: var(--pink); }
-.tl-item.s-roadmap::before    { background: #2a2a2a; border-color: #333; }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.35} }
-.tl-date   { font-size: 0.62rem; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 0.2rem; }
-.tl-name   { font-size: 0.88rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
-.tl-target { font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem; }
-.badge {
-  display: inline-block; font-size: 0.55rem;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  padding: 0.15rem 0.45rem; border-radius: 2px;
-}
-.b-up  { background: rgba(255,255,255,0.06); color: var(--muted); }
-.b-wip { background: rgba(255,255,255,0.08); color: var(--text); }
-.b-tgt { background: rgba(255,255,255,0.08); color: var(--text); }
-.b-pln { background: rgba(255,255,255,0.06); color: var(--pink); }
-.b-map { background: rgba(255,255,255,0.04); color: var(--muted); }
-
-/* ─── TEAM ─── */
-.team-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 1px; background: var(--border); border: 1px solid var(--border);
-}
-.team-card { background: var(--surf); padding: 2rem 1.75rem; }
-.tc-name   { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.25rem; }
-.tc-role   { font-size: 0.62rem; letter-spacing: 0.18em; color: var(--pink); text-transform: uppercase; margin-bottom: 1.5rem; }
-.tc-items  { display: flex; flex-direction: column; }
-.tc-item   { display: flex; align-items: center; gap: 0.55rem; font-size: 0.78rem; color: var(--muted); padding: 0.35rem 0; border-bottom: 1px solid var(--border); }
-.tc-item:last-child { border-bottom: none; }
-.dot       { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-.d-lead    { background: var(--pink); }
-.d-colead  { background: var(--yellow); }
-.d-support { background: #333; }
-
-/* ─── REVENUE CARD ─── */
-#math { border-top: 1px solid var(--border); }
-#math .wrap { padding-top: 3rem; padding-bottom: 3rem; }
-.rev-card {
-  background: var(--surf); border: 1px solid var(--border);
-  padding: 1.5rem 1.75rem; display: flex; flex-direction: column; gap: 0.6rem;
-}
-.rev-top {
-  display: flex; align-items: baseline; justify-content: space-between;
-  flex-wrap: wrap; gap: 0.75rem 2rem;
-}
-.rev-label { font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
-.rev-eq    { font-size: 1rem; font-weight: 700; }
-.re-num    { color: var(--text); }
-.re-dim    { color: var(--muted); font-weight: 400; }
-.re-result { color: var(--green); }
-.rev-note  { font-size: 0.65rem; color: var(--muted); line-height: 1.7; }
-
-/* ─── FUNDING / CTA ─── */
-#cta {
-  padding: 6rem 2rem; border-top: 1px solid var(--border);
-  position: relative; overflow: hidden; text-align: center;
-}
-#cta-glow {
-  position: absolute; width: 700px; height: 700px;
-  background: none;
-  top: 50%; left: 50%; transform: translate(-50%,-50%);
-  pointer-events: none;
-}
-.cta-eyebrow { font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); margin-bottom: 2rem; position: relative; }
-.cta-needs-title {
-  font-size: clamp(2rem, 6vw, 4rem);
-  font-weight: 700; letter-spacing: -0.04em; line-height: 0.9;
-  margin-bottom: 3.5rem; position: relative; color: var(--text);
-}
-.cta-needs-title span { color: var(--pink); }
-.funding-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1px; background: var(--border); border: 1px solid var(--border);
-  max-width: 860px; margin: 0 auto 2.5rem;
-}
-.fund-card {
-  background: var(--surf); padding: 2.5rem 1.5rem;
-  display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
-  transition: background 0.18s; touch-action: manipulation;
-}
-.fund-card:hover { background: var(--surf2); }
-.fund-card.urgent { border-top: 2px solid var(--orange); }
-.fund-date   { font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
-.fund-amount { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700; line-height: 1; color: var(--text); }
-.fund-card.urgent .fund-amount { color: var(--orange); }
-.fund-card.soon   .fund-amount { color: var(--yellow); }
-.fund-card.mid    .fund-amount { color: var(--pink); }
-.fund-card.later  .fund-amount { color: var(--green); }
-.fund-tag { font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.2rem 0.6rem; border-radius: 2px; }
-.fund-tag.t-urgent { background: rgba(255,255,255,0.1); color: var(--text); }
-.fund-tag.t-soon   { background: rgba(255,255,255,0.07); color: var(--muted); }
-.fund-tag.t-mid    { background: rgba(255,255,255,0.07); color: var(--muted); }
-.fund-tag.t-later  { background: rgba(255,255,255,0.07); color: var(--muted); }
-.fund-total { font-size: 0.8rem; color: var(--muted); letter-spacing: 0.1em; position: relative; }
-.fund-total span { color: var(--text); font-weight: 700; }
-
-/* ─── FOOTER ─── */
-footer {
-  padding: 1.5rem 2rem; text-align: center;
-  border-top: 1px solid var(--border);
-  font-size: 0.6rem; color: #2a2a2a; letter-spacing: 0.12em;
+/* White inner area with sunken border */
+.modal-body > * { }
+.modal-body::before {
+  content: none;
 }
 
-/* ─── FONT MIX ─── */
-.hero-headline, .cta-needs-title, .tc-name, .fund-amount, .rev-eq, .pc-budget, .bt-cell
-  { font-family: 'Times New Roman', Times, serif; }
-
-.hero-eyebrow, .label, .cta-eyebrow, .badge, .tc-role, .fund-tag, .bt-ann, .bt-footnote, .scroll-hint, footer
-  { font-family: 'Comic Sans MS', 'Comic Sans', cursive; }
-
-.nav-links a, .pc-period, .tl-date, .tl-target, .rev-label, .fund-date, .bt-head .bt-cell, .bt-lsub
-  { font-family: 'Century Gothic', Century, 'Apple Gothic', sans-serif; }
-
-.hero-body, .pc-milestone, .pc-remaining, .tc-item, .rev-note, .fund-total, .bt-lname
-  { font-family: Tahoma, Geneva, sans-serif; }
-
-.sec-title { font-family: 'Comic Sans MS', 'Comic Sans', cursive; }
-
-/* ─── MODE BUTTON ─── */
-.mode-btn {
-  font-family: 'Comic Sans MS', cursive; font-size: 0.7rem; font-weight: bold;
-  color: #000; background: var(--text);
-  border: 2px solid #000; padding: 0.35rem 0.75rem;
-  text-decoration: none; letter-spacing: 0.05em;
-  box-shadow: 2px 2px 0 #000; cursor: url('cursor.png'), auto;
-  transition: transform 0.1s, box-shadow 0.1s; white-space: nowrap;
+/* Scrollbar — chunky Win98 style */
+.modal-body::-webkit-scrollbar { width: 16px; }
+.modal-body::-webkit-scrollbar-track {
+  background: #c0c0c0;
+  box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #dfdfdf;
 }
-.mode-btn:hover  { transform: translate(-1px,-1px); box-shadow: 3px 3px 0 #000; }
-.mode-btn:active { transform: translate(1px,1px);   box-shadow: 1px 1px 0 #000; }
-
-/* ─── RESPONSIVE ─── */
-@media (pointer: coarse) { body { cursor: auto; } }
-
-@media (max-width: 768px) {
-  .wrap { padding: 4rem 1.25rem; }
-  nav { padding: 0.85rem 1.25rem; }
-  nav img { height: 18px; }
-  .nav-links { display: none; }
-  #hero { padding: 5.5rem 1.5rem 4rem; }
-  .hero-logo { width: clamp(200px, 78vw, 480px); margin-bottom: 1.5rem; }
-  .hero-eyebrow { margin-bottom: 1.5rem; }
-  .hero-headline { font-size: clamp(1.4rem, 6vw, 2.2rem); margin-bottom: 1.25rem; }
-  .phases-grid { grid-template-columns: repeat(2, 1fr); }
-  .team-grid { grid-template-columns: 1fr; }
-  .rev-top { flex-direction: column; gap: 0.5rem; }
-  .rev-eq  { font-size: 0.9rem; }
-  .bt-scroll::after {
-    content: '← scroll →'; display: block; text-align: center;
-    font-family: 'Comic Sans MS', cursive; font-size: 0.58rem;
-    letter-spacing: 0.15em; color: var(--muted); margin-top: 0.5rem;
-  }
-  .funding-grid { grid-template-columns: repeat(2, 1fr); max-width: 100%; }
-  .fund-card { padding: 1.75rem 1rem; }
-  .fund-amount { font-size: clamp(1.5rem, 6vw, 2rem); }
-  .cta-needs-title { font-size: clamp(1.6rem, 7vw, 3rem); margin-bottom: 2.5rem; }
-  .sec-title { margin-bottom: 2rem; }
+.modal-body::-webkit-scrollbar-thumb {
+  background: #c0c0c0;
+  border: 1px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+  box-shadow: inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #404040;
+}
+.modal-body::-webkit-scrollbar-button {
+  background: #c0c0c0; height: 16px; display: block;
+  border: 1px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
 }
 
-@media (max-width: 480px) {
-  .wrap { padding: 3.5rem 1rem; }
-  .phases-grid { grid-template-columns: 1fr; }
-  .funding-grid { grid-template-columns: repeat(2, 1fr); }
-  .fund-card { padding: 1.5rem 0.875rem; }
-  .fund-amount { font-size: clamp(1.3rem, 7vw, 1.8rem); }
-  #hero { padding: 5rem 1rem 3.5rem; }
-  .scroll-hint { bottom: 1.5rem; }
+/* Inner white content wrapper */
+.modal-content-pane {
+  background: #ffffff;
+  box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #ffffff,
+              inset 2px 2px 0 #404040, inset -2px -2px 0 #dfdfdf;
+  padding: 16px 20px 20px;
 }
 
-@media (hover: none) {
-  .phase-card:active { background: var(--surf2); }
-  .fund-card:active  { background: var(--surf2); }
-  .team-card:active  { background: var(--surf2); }
-  .tl-item { -webkit-tap-highlight-color: transparent; }
+/* ── ALL FOUND — Win98 error dialog ── */
+#all-found {
+  position: fixed; top: 50%; left: 50%;
+  transform: translate(-50%,-50%) scale(0.9);
+  z-index: 500;
+  background: #c0c0c0;
+  box-shadow:
+    inset  2px  2px 0 #dfdfdf,
+    inset -2px -2px 0 #404040,
+    inset  1px  1px 0 #ffffff,
+    inset -1px -1px 0 #808080;
+  width: 420px; max-width: 90vw;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
 }
+#all-found.show { opacity: 1; pointer-events: auto; transform: translate(-50%,-50%) scale(1); }
+
+.all-found-titlebar {
+  background: linear-gradient(90deg, #000080 0%, #1084d0 100%);
+  padding: 3px 6px 4px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.all-found-titlebar span {
+  font-size: 11px; font-weight: bold; color: #fff;
+  font-family: 'Tahoma', Arial, sans-serif;
+}
+
+.all-found-body {
+  padding: 20px 20px 14px;
+  display: flex; gap: 16px; align-items: flex-start;
+}
+.all-found-icon {
+  font-size: 32px; flex-shrink: 0; line-height: 1;
+  margin-top: 2px;
+}
+.all-found-text {}
+
+#all-found h2 {
+  font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
+  font-size: 13px; font-weight: bold;
+  color: #000; line-height: 1.4; margin-bottom: 8px;
+  letter-spacing: 0; text-transform: none;
+}
+#all-found p {
+  font-family: 'Tahoma', Arial, sans-serif;
+  font-size: 11px; color: #000;
+  font-style: normal; line-height: 1.5;
+}
+.all-found-footer {
+  padding: 8px 16px 14px;
+  display: flex; justify-content: center;
+}
+#all-found button {
+  padding: 4px 24px; margin: 0;
+  background: #c0c0c0;
+  border: 1px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+  box-shadow: inset -1px -1px 0 #404040, inset 1px 1px 0 #dfdfdf;
+  color: #000;
+  font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
+  font-size: 11px; font-weight: normal;
+  letter-spacing: 0; text-transform: none;
+  min-width: 75px;
+}
+#all-found button:active {
+  border-color: #808080 #ffffff #ffffff #808080;
+  box-shadow: inset 1px 1px 0 #404040;
+  padding: 5px 23px 3px 25px;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   WIN98 DATA STYLES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* Callout boxes — Win98 inset group box */
+.callout {
+  padding: 14px 16px; margin-bottom: 16px;
+  background: #ffffff;
+  box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #ffffff,
+              inset 2px 2px 0 #404040, inset -2px -2px 0 #dfdfdf;
+}
+.callout.gold  { border-left: 3px solid #000080; }
+.callout.coral { border-left: 3px solid #800000; }
+.callout.teal  { border-left: 3px solid #008080; }
+.callout-lbl {
+  font-family: 'Tahoma', Arial, sans-serif;
+  font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+  font-weight: bold; margin-bottom: 4px;
+}
+.callout.gold  .callout-lbl { color: #000080; }
+.callout.coral .callout-lbl { color: #800000; }
+.callout.teal  .callout-lbl { color: #008080; }
+.callout-val {
+  font-family: 'Tahoma', Arial, sans-serif;
+  font-size: 22px; font-weight: bold; line-height: 1.2; color: #000000;
+}
+.callout-note { font-family: 'Tahoma', Arial, sans-serif; font-size: 11px; color: #444; margin-top: 5px; line-height: 1.6; }
+
+/* Section headers */
+.dsec-title {
+  font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
+  font-size: 14px; font-weight: bold;
+  color: #000000; margin-bottom: 2px; line-height: 1.3;
+  letter-spacing: 0;
+}
+.dsec-sub {
+  font-family: 'Tahoma', Arial, sans-serif; font-style: normal;
+  font-size: 11px; color: #555555; margin-bottom: 14px;
+}
+.drule { width: 100%; height: 2px; margin-bottom: 14px; opacity: 1;
+  background: linear-gradient(90deg, #808080 0%, #dfdfdf 100%); }
+
+/* Budget table */
+.dtable { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 16px; font-family: 'Tahoma', Arial, sans-serif; }
+.dtable th {
+  text-align: left; font-size: 10px; font-weight: bold; letter-spacing: 0;
+  text-transform: uppercase; color: #ffffff;
+  background: #000080; padding: 4px 10px 4px 6px;
+  border: 1px solid #000040;
+}
+.dtable td { padding: 8px 10px 8px 6px; border-bottom: 1px solid #d0d0d0; vertical-align: top; color: #000; }
+.dtable tr:nth-child(even) td { background: #f0f0f0; }
+.dtable tr:last-child td { border-bottom: none; }
+.td-mo { font-family: 'Tahoma', Arial, sans-serif; font-size: 12px; font-weight: bold; color: #000080; letter-spacing: 0; }
+.td-it { font-size: 11px; color: #333; line-height: 1.85; }
+.td-tt { font-family: 'Tahoma', Arial, sans-serif; font-size: 13px; font-weight: bold; color: #800000; }
+.td-ba { font-size: 11px; font-weight: bold; color: #008080; }
+
+/* Milestone list */
+.ms-list { display: flex; flex-direction: column; font-family: 'Tahoma', Arial, sans-serif; }
+.ms-item {
+  display: grid; grid-template-columns: 80px 1fr auto; gap: 12px;
+  padding: 8px 6px; border-bottom: 1px solid #d0d0d0; align-items: start;
+}
+.ms-item:nth-child(even) { background: #f0f0f0; }
+.ms-item:last-child { border-bottom: none; }
+.ms-dt { font-size: 10px; font-weight: bold; letter-spacing: 0; color: #000080; padding-top: 1px; line-height: 1.4; }
+.ms-nm { font-size: 11px; font-weight: bold; color: #000; margin-bottom: 2px; }
+.ms-de { font-size: 10px; color: #444; line-height: 1.55; }
+.ms-tg {
+  font-size: 9px; letter-spacing: 0; text-transform: uppercase;
+  padding: 2px 6px; white-space: nowrap; flex-shrink: 0;
+  font-weight: bold; font-family: 'Tahoma', Arial, sans-serif;
+  border: 1px solid;
+}
+.tag-up   { background: #c0c0c0; color: #000080; border-color: #ffffff #808080 #808080 #ffffff; }
+.tag-prog { background: #c0c0c0; color: #008080; border-color: #ffffff #808080 #808080 #ffffff; }
+.tag-tgt  { background: #c0c0c0; color: #800000; border-color: #ffffff #808080 #808080 #ffffff; }
+.tag-plan { background: #c0c0c0; color: #800080; border-color: #ffffff #808080 #808080 #ffffff; }
+.tag-road { background: #c0c0c0; color: #555555; border-color: #ffffff #808080 #808080 #ffffff; }
+
+/* Roadmap */
+.rm-phase   { margin-bottom: 24px; font-family: 'Tahoma', Arial, sans-serif; }
+.rm-ph-tt   { font-size: 12px; font-weight: bold; color: #800000; letter-spacing: 0; margin-bottom: 6px; text-transform: uppercase; }
+.rm-week    { display: grid; grid-template-columns: 110px 1fr; gap: 14px; padding: 8px 6px; border-bottom: 1px solid #d0d0d0; }
+.rm-week:nth-child(even) { background: #f0f0f0; }
+.rm-week:last-child { border-bottom: none; }
+.rm-wl { font-size: 9px; font-weight: bold; text-transform: uppercase; letter-spacing: 0; color: #000080; padding-top: 1px; line-height: 1.6; }
+.rm-ac { font-size: 11px; color: #000; line-height: 1.75; margin-bottom: 8px; }
+.resp-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; }
+.resp-col  { font-size: 10px; line-height: 1.65; color: #555; }
+.resp-col strong { display: block; color: #000; font-weight: bold; font-size: 9px; letter-spacing: 0; text-transform: uppercase; margin-bottom: 1px; }
+
+/* Responsibility matrix */
+.rmat { width: 100%; border-collapse: collapse; font-size: 10px; font-family: 'Tahoma', Arial, sans-serif; }
+.rmat th {
+  text-align: left; font-size: 9px; font-weight: bold; letter-spacing: 0;
+  text-transform: uppercase; color: #ffffff; background: #000080;
+  padding: 4px 8px; border: 1px solid #000040;
+}
+.rmat td  { padding: 6px 8px; border-bottom: 1px solid #d0d0d0; color: #000; }
+.rmat tr:nth-child(even) td { background: #f0f0f0; }
+.rmat tr:last-child td { border-bottom: none; }
+.tl  { font-weight: bold; color: #000080; }
+.ts  { color: #555; }
+.tdx { color: #bbb; }
+.tdl { color: #666; font-size: 10px; }
+
+/* Daily plan terminal */
+.daily-outer {
+  background: #000000;
+  border: 2px solid;
+  border-color: #808080 #ffffff #ffffff #808080;
+  box-shadow: inset 1px 1px 0 #404040;
+  padding: 16px 18px;
+}
+.dp {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px; line-height: 1.85;
+  color: #c0c0c0; white-space: pre-wrap; word-break: break-word;
+}
+.dp .mhd { display: block; font-size: 13px; font-weight: bold; color: #ffffff; letter-spacing: 0.05em; margin: 10px 0 2px; line-height: 1.2; }
+.dp .whd { display: block; font-weight: bold; font-size: 10px; letter-spacing: 0; text-transform: uppercase; color: #ffff00; margin-top: 14px; }
+.dp .dy  { color: #ffffff; font-weight: bold; }
+.dp .tk  { color: #c0c0c0; padding-left: 14px; display: block; }
+.dp .rl  { color: #00ffff; font-size: 10px; display: block; padding-left: 4px; }
+.dp .dv  { display: block; color: #555; margin: 10px 0 2px; font-size: 10px; }
+.dp .cl  { display: block; font-weight: bold; font-size: 11px; color: #ffff00; letter-spacing: 0.05em; margin: 14px 0 2px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 767px) {
+  .modal-wrap { padding: 8px; align-items: flex-end; }
+  .modal { max-height: 92vh; }
+  .modal-body { padding: 4px; }
+  .resp-grid { grid-template-columns: 1fr; gap: 4px; }
+  .rm-week   { grid-template-columns: 1fr; gap: 2px; }
+  .ms-item   { grid-template-columns: 64px 1fr; }
+  .ms-tg     { display: none; }
+  #all-found { width: 95vw; }
+}
+
 </style>
 </head>
 <body>
 
-<div id="bg-wrap"><div class="bg-slide"></div></div>
-<div id="bg-scrim"></div>
+<!-- GATE -->
+<div id="gate">
+  <button class="gate-close" onclick="enterScene()">×</button>
+  <img class="gate-intro-img" src="./assets/intro.png" alt="">
+</div>
 
-<nav>
-  <img src="worksuckslogo-white.svg" alt="WORKSUCKS" style="height:22px;width:auto;display:block;">
-  <ul class="nav-links">
-    <li><a href="#phases">Phases</a></li>
-    <li><a href="#budget">Budget</a></li>
-    <li><a href="#milestones">Timeline</a></li>
-    <li><a href="#team">Team</a></li>
-    <li><a href="#cta">Funding</a></li>
-  </ul>
-  <a href="terminal.html" class="mode-btn">I CAN'T READ</a>
-</nav>
-
-<section id="hero">
-  <p class="hero-eyebrow">FOR JONNY GORDON ONLY</p>
-  <img src="worksuckslogo-white.svg" alt="WORKSUCKS" class="hero-logo">
-  <h2 class="hero-headline">EXACTLY WHAT HAPPENS AFTER<br>YOU WRITE THE CHECK.</h2>
-  <p class="hero-body">Five phases · Five months · Three live activations<br>Seed round closed · Long-form game launched</p>
-  <div class="scroll-hint">↓ &nbsp; scroll &nbsp; ↓</div>
-</section>
-
-<div id="phases">
-  <div class="wrap fi">
-    <p class="label">Phase breakdown</p>
-    <div class="phases-grid">
-
-      <div class="phase-card">
-        <p class="pc-num">Phase 01</p>
-        <h3 class="pc-name">DIT LA Launch</h3>
-        <p class="pc-period">May 1 – 17</p>
-        <p class="pc-milestone">DIT LA event execution · Sponsor sprint · Website live · Game dev v1 playtest · Seed investor outreach opens</p>
-        <div class="pc-footer">
-          <span class="pc-budget">$11,000</span>
-          <span class="pc-remaining">Remaining: <span class="v">$19,000</span></span>
-        </div>
-      </div>
-
-      <div class="phase-card">
-        <p class="pc-num">Phase 02</p>
-        <h3 class="pc-name">NYC Prep + Travel</h3>
-        <p class="pc-period">May 18 – Jun 16</p>
-        <p class="pc-milestone">NYC sponsorship sprint · Rhizome venue scout · DIT NYC event (Jun 16) · Seed investor close push</p>
-        <div class="pc-footer">
-          <span class="pc-budget">$9,000</span>
-          <span class="pc-remaining">Remaining: <span class="v">$10,000</span></span>
-        </div>
-      </div>
-
-      <div class="phase-card">
-        <p class="pc-num">Phase 03</p>
-        <h3 class="pc-name">FWB Fest + Cooling</h3>
-        <p class="pc-period">July</p>
-        <p class="pc-milestone">FWB Fest activation · DIT NYC 2 sponsorship build · Close seed round · Long-form artist acquisition begins</p>
-        <div class="pc-footer">
-          <span class="pc-budget">$7,000</span>
-          <span class="pc-remaining">Remaining: <span class="v">$3,000</span></span>
-        </div>
-      </div>
-
-      <div class="phase-card">
-        <p class="pc-num">Phase 04</p>
-        <h3 class="pc-name">NYC DIT 2</h3>
-        <p class="pc-period">August</p>
-        <p class="pc-milestone">Second NYC activation · Long-form game final prep · Seed round officially closed · Series A prep begins</p>
-        <div class="pc-footer">
-          <span class="pc-budget" style="color:var(--yellow)">Sponsored</span>
-          <span class="pc-remaining" style="font-size:0.62rem">Offset by sponsors</span>
-        </div>
-      </div>
-
-      <div class="phase-card payoff">
-        <p class="pc-num">Phase 05</p>
-        <h3 class="pc-name">Long-Form Debut</h3>
-        <p class="pc-period">September</p>
-        <p class="pc-milestone">NYC paid long-form game launch · 200 players · No required IRL production budget · Self-funding model proven</p>
-        <div class="pc-footer">
-          <span class="pc-budget">$0 cost</span>
-          <span class="pc-remaining">Revenue: <span class="v" style="color:var(--green)">$30,000+</span></span>
-        </div>
-      </div>
-
-    </div>
+<!-- HUD -->
+<div id="hud">
+  <img class="hud-logo" src="./worksuckslogo-white.svg" alt="WORKSUCKS">
+  <div class="hud-title">WHERE'S JONNY?</div>
+  <div class="hud-right">
+    <div class="hud-count">Found <span id="found-count">0</span> / 4</div>
+    <button class="hint-btn" onclick="showHint()">Hint</button>
   </div>
 </div>
 
-<hr class="rule">
+<div id="drag-nudge">
+  <span class="nudge-arrow">←</span>
+  <span>Drag to explore</span>
+  <span class="nudge-arrow">→</span>
+</div>
 
-<div id="budget">
-  <div class="wrap fi">
-    <p class="label">Budget breakdown</p>
-    <h2 class="sec-title">WHERE'S THE<br>MONEY GOING?</h2>
-    <div class="bt-scroll">
-      <div class="bt">
-        <div class="bt-row bt-head">
-          <div class="bt-cell"></div>
-          <div class="bt-cell">MAY</div>
-          <div class="bt-cell">JUN</div>
-          <div class="bt-cell">JUL</div>
-          <div class="bt-cell">AUG *</div>
-          <div class="bt-cell bt-tcol">TOTAL</div>
-        </div>
-        <div class="bt-row">
-          <div class="bt-cell">
-            <span class="bt-lname">Ongoing Operations</span>
-            <span class="bt-lsub">Team · Tools · Recurring costs</span>
-          </div>
-          <div class="bt-cell"><span class="bt-val">$7,000</span></div>
-          <div class="bt-cell"><span class="bt-val">$7,000</span></div>
-          <div class="bt-cell"><span class="bt-val">$7,000</span></div>
-          <div class="bt-cell"><span class="bt-val bt-dim-val">$3,000</span></div>
-          <div class="bt-cell bt-tcol"><span class="bt-val">$24,000</span></div>
-        </div>
-        <div class="bt-row">
-          <div class="bt-cell">
-            <span class="bt-lname">Event Production &amp; Travel</span>
-            <span class="bt-lsub">Venue · Production · Artist fees · Transport</span>
-          </div>
-          <div class="bt-cell">
-            <span class="bt-event-val">$3,000</span>
-            <span class="bt-ann">↳ DIT LA · May 17</span>
-          </div>
-          <div class="bt-cell">
-            <span class="bt-event-val">$2,000</span>
-            <span class="bt-ann">↳ DIT NYC · Jun 16 + Travel</span>
-          </div>
-          <div class="bt-cell"><span class="bt-nil">—</span></div>
-          <div class="bt-cell"><span class="bt-nil">—</span></div>
-          <div class="bt-cell bt-tcol"><span class="bt-val bt-event-val">$5,000</span></div>
-        </div>
-        <div class="bt-row">
-          <div class="bt-cell">
-            <span class="bt-lname">Admin &amp; Legal Setup</span>
-            <span class="bt-lsub">One-time setup costs · May only</span>
-          </div>
-          <div class="bt-cell"><span class="bt-val">$1,000</span></div>
-          <div class="bt-cell"><span class="bt-nil">—</span></div>
-          <div class="bt-cell"><span class="bt-nil">—</span></div>
-          <div class="bt-cell"><span class="bt-nil">—</span></div>
-          <div class="bt-cell bt-tcol"><span class="bt-val">$1,000</span></div>
-        </div>
-        <div class="bt-row bt-total">
-          <div class="bt-cell"><span class="bt-lname">Monthly Total</span></div>
-          <div class="bt-cell"><span class="bt-val">$11,000</span></div>
-          <div class="bt-cell"><span class="bt-val">$9,000</span></div>
-          <div class="bt-cell"><span class="bt-val">$7,000</span></div>
-          <div class="bt-cell"><span class="bt-val bt-dim-val">~$3,000</span></div>
-          <div class="bt-cell bt-tcol"><span class="bt-val" style="color:var(--orange)">$30,000</span></div>
-        </div>
-        <div class="bt-row bt-remain">
-          <div class="bt-cell"><span class="bt-lname">Cash Remaining</span></div>
-          <div class="bt-cell"><span class="bt-remain-val">$19,000</span></div>
-          <div class="bt-cell"><span class="bt-remain-val">$10,000</span></div>
-          <div class="bt-cell"><span class="bt-remain-val">$3,000</span></div>
-          <div class="bt-cell"><span class="bt-nil">—</span></div>
-          <div class="bt-cell bt-tcol"><span class="bt-nil">—</span></div>
-        </div>
-      </div>
+<!-- SCENE -->
+<div id="scene-wrap">
+  <div id="scene"></div>
+</div>
+
+<!-- All found — Win98 error dialog -->
+<div id="all-found">
+  <div class="all-found-titlebar">
+    <span>&#x26A0; System Alert</span>
+  </div>
+  <div class="all-found-body">
+    <div class="all-found-icon">&#x26A0;&#xFE0F;</div>
+    <div class="all-found-text">
+      <h2>THANK FUCKING GOD YOU FOUND JONNY</h2>
+      <p>Pls ask him to call Paizley.</p>
     </div>
-    <p class="bt-footnote">
-      * August event costs offset by sponsorship revenue — not drawn from the $30K.<br>
-      September not included — long-form game self-funded via player fees.
-    </p>
+  </div>
+  <div class="all-found-footer">
+    <button onclick="document.getElementById('all-found').classList.remove('show')">OK</button>
   </div>
 </div>
 
-<hr class="rule">
 
-<div id="milestones">
-  <div class="wrap fi">
-    <p class="label">Key milestones</p>
-    <h2 class="sec-title">Milestones.</h2>
-    <div class="timeline">
-
-      <div class="tl-item s-inprogress">
-        <p class="tl-date">May 5</p>
-        <p class="tl-name">DIT Website Live <span class="badge b-wip">In Progress</span></p>
-        <p class="tl-target">Launch + Partiful integration</p>
-      </div>
-
-      <div class="tl-item s-upcoming">
-        <p class="tl-date">May 7</p>
-        <p class="tl-name">Game Dev v1 — Internal Playtest <span class="badge b-up">Upcoming</span></p>
-        <p class="tl-target">First full internal review</p>
-      </div>
-
-      <div class="tl-item s-inprogress">
-        <p class="tl-date">May 15</p>
-        <p class="tl-name">DIT LA Sponsors Secured <span class="badge b-wip">In Progress</span></p>
-        <p class="tl-target">Product + cash sponsors</p>
-      </div>
-
-      <div class="tl-item s-upcoming">
-        <p class="tl-date">May 17</p>
-        <p class="tl-name">DIT LA — Event Executed <span class="badge b-up">Upcoming</span></p>
-        <p class="tl-target">First activation</p>
-      </div>
-
-      <div class="tl-item s-inprogress">
-        <p class="tl-date">May 27</p>
-        <p class="tl-name">Seed Outreach — 2× $25K targets <span class="badge b-wip">In Progress</span></p>
-        <p class="tl-target">Two closes targeted for $50K SAFE</p>
-      </div>
-
-      <div class="tl-item s-upcoming">
-        <p class="tl-date">Jun 2</p>
-        <p class="tl-name">DIT NYC — Travel + Rhizome Scout <span class="badge b-up">Upcoming</span></p>
-        <p class="tl-target">Venue locked</p>
-      </div>
-
-      <div class="tl-item s-upcoming">
-        <p class="tl-date">Jun 11</p>
-        <p class="tl-name">NYC Sponsor Sprint Closes <span class="badge b-up">Upcoming</span></p>
-        <p class="tl-target">NYC product sponsors confirmed</p>
-      </div>
-
-      <div class="tl-item s-upcoming">
-        <p class="tl-date">Jun 16</p>
-        <p class="tl-name">DIT NYC — Event Executed <span class="badge b-up">Upcoming</span></p>
-        <p class="tl-target">Second activation</p>
-      </div>
-
-      <div class="tl-item s-planning">
-        <p class="tl-date">July</p>
-        <p class="tl-name">FWB Fest Activation <span class="badge b-pln">Planning</span></p>
-        <p class="tl-target">Brand presence + community build</p>
-      </div>
-
-      <div class="tl-item s-target">
-        <p class="tl-date">August</p>
-        <p class="tl-name">Seed Round — CLOSED <span class="badge b-tgt">Target</span></p>
-        <p class="tl-target">$50,000+ SAFE · deadline hard</p>
-      </div>
-
-      <div class="tl-item s-planning">
-        <p class="tl-date">August</p>
-        <p class="tl-name">DIT NYC 2 — Executed <span class="badge b-pln">Planning</span></p>
-        <p class="tl-target">Third activation</p>
-      </div>
-
-      <div class="tl-item s-target">
-        <p class="tl-date">September</p>
-        <p class="tl-name">NYC Long-Form Game — DEBUT <span class="badge b-tgt">Target</span></p>
-        <p class="tl-target">200 players × $150 = $30,000 revenue</p>
-      </div>
-
-      <div class="tl-item s-roadmap">
-        <p class="tl-date">Late 2026</p>
-        <p class="tl-name">Series A — Begin Process <span class="badge b-map">Roadmap</span></p>
-        <p class="tl-target">Deck + outreach, backed by Sept proof</p>
-      </div>
-
+<!-- ════════════════════════════════
+     MODAL 1 — USE OF FUNDS
+════════════════════════════════ -->
+<div class="modal-wrap" id="modal-funds" onclick="handleOvClick(event,'funds')">
+  <div class="modal">
+    <div class="modal-head">
+      <div><div class="modal-eyebrow">Found Him · 01</div><div class="modal-title">Use of Funds</div></div>
+      <button class="modal-close" onclick="closeModal('funds')">×</button>
     </div>
+    <div class="modal-body"><div class="modal-content-pane">
+
+      <div class="callout gold">
+        <div class="callout-lbl">Starting Capital · May 1, 2026</div>
+        <div class="callout-val">$30,000</div>
+        <div class="callout-note">Seed Close Deadline: August 2026 &nbsp;·&nbsp; Series A Target: Late 2026<br>Monthly baseline: Paizley $4,500 · Alec + Shawn $2,000 · Admin tools $500</div>
+      </div>
+
+      <table class="dtable">
+        <thead><tr><th>Month</th><th>Line Items</th><th>Total Out</th><th>Balance</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><div class="td-mo">MAY 2026</div></td>
+            <td><div class="td-it">Operations · $7,000<br>&nbsp;&nbsp;└ Paizley · $4,500<br>&nbsp;&nbsp;└ Alec + Shawn · $2,000<br>&nbsp;&nbsp;└ Admin (Canva, CapCut, Anthropic, OpenAI, MidJourney, Wix) · $500<br>DIT LA Event · $3,000 (venue, computers, activations)<br>Additional Admin · $1,000</div></td>
+            <td><div class="td-tt">$11,000</div></td>
+            <td><div class="td-ba">$19,000</div></td>
+          </tr>
+          <tr>
+            <td><div class="td-mo">JUNE 2026</div></td>
+            <td><div class="td-it">Operations · $7,000<br>&nbsp;&nbsp;└ Paizley · $4,500<br>&nbsp;&nbsp;└ Alec + Shawn · $2,000<br>&nbsp;&nbsp;└ Admin tools · $500<br>NYC Event 1 (travel + build) · $2,000</div></td>
+            <td><div class="td-tt">$9,000</div></td>
+            <td><div class="td-ba">$10,000</div></td>
+          </tr>
+          <tr>
+            <td><div class="td-mo">JULY 2026</div></td>
+            <td><div class="td-it">Operations · $7,000<br>&nbsp;&nbsp;└ Paizley · $4,500<br>&nbsp;&nbsp;└ Alec + Shawn · $2,000<br>&nbsp;&nbsp;└ Admin tools · $500<br>FWB Fest activation · event-funded<br>Seed round final push</div></td>
+            <td><div class="td-tt">$7,000</div></td>
+            <td><div class="td-ba">$3,000</div></td>
+          </tr>
+          <tr>
+            <td><div class="td-mo">AUG 2026</div></td>
+            <td><div class="td-it">Covered by remaining balance + seed close proceeds<br>NYC DIT 2 activation · costs offset by sponsorship<br>Seed Round closes this month</div></td>
+            <td><div class="td-tt">$3,000</div></td>
+            <td><div class="td-ba">—</div></td>
+          </tr>
+          <tr>
+            <td><div class="td-mo">SEPT 2026</div></td>
+            <td><div class="td-it">Fully self-funded via player revenue<br>No IRL production budget required<br>NYC Long-Form Game debut · paid event</div></td>
+            <td><div class="td-tt">Self-funded</div></td>
+            <td><div class="td-ba">$30,000+</div></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout coral">
+        <div class="callout-lbl">September Revenue Target</div>
+        <div class="callout-val">200 × $150 = $30,000</div>
+        <div class="callout-note">NYC Long-Form Game · No required IRL production budget · Player management system handles all ticketing</div>
+      </div>
+
+    </div></div>
   </div>
 </div>
 
-<hr class="rule">
 
-<div id="team">
-  <div class="wrap fi">
-    <p class="label">The team</p>
-    <h2 class="sec-title">WHO ARE THE<br>RESPONSIBLE ADULTS?</h2>
-    <div class="team-grid">
+<!-- ════════════════════════════════
+     MODAL 2 — MILESTONES
+════════════════════════════════ -->
+<div class="modal-wrap" id="modal-milestones" onclick="handleOvClick(event,'milestones')">
+  <div class="modal">
+    <div class="modal-head">
+      <div><div class="modal-eyebrow">Found Him · 02</div><div class="modal-title">Milestones</div></div>
+      <button class="modal-close" onclick="closeModal('milestones')">×</button>
+    </div>
+    <div class="modal-body"><div class="modal-content-pane">
 
-      <div class="team-card">
-        <p class="tc-name">Paizley</p>
-        <p class="tc-role">Founder / Lead</p>
-        <div class="tc-items">
-          <div class="tc-item"><div class="dot d-lead"></div>Event Production — DIT LA + NYC</div>
-          <div class="tc-item"><div class="dot d-lead"></div>Investor Relations (Seed)</div>
-          <div class="tc-item"><div class="dot d-lead"></div>Artist Briefs &amp; Contracts</div>
-          <div class="tc-item"><div class="dot d-lead"></div>Social Assets &amp; Content</div>
-          <div class="tc-item"><div class="dot d-lead"></div>FWB Fest Activation</div>
-          <div class="tc-item"><div class="dot d-colead"></div>Seed Round Close (co-lead)</div>
-          <div class="tc-item"><div class="dot d-lead"></div>Series A Prep</div>
+      <div class="dsec-title">Key Milestones</div>
+      <div class="dsec-sub">May 2026 – Late 2026 &nbsp;·&nbsp; 15 targets across 5 phases</div>
+      <div class="drule"></div>
+
+      <div class="ms-list">
+        <div class="ms-item"><div class="ms-dt">MAY 5<br>2026</div><div><div class="ms-nm">DIT Website Live</div><div class="ms-de">Launch + Partiful · Event registration open · Alec & Shawn lead build</div></div><span class="ms-tg tag-prog">In Progress</span></div>
+        <div class="ms-item"><div class="ms-dt">MAY 7<br>2026</div><div><div class="ms-nm">Game Dev v1 Review</div><div class="ms-de">Internal playtest · Test player management system · Alec & Shawn lead</div></div><span class="ms-tg tag-up">Upcoming</span></div>
+        <div class="ms-item"><div class="ms-dt">MAY 15<br>2026</div><div><div class="ms-nm">DIT LA — Sponsors Secured</div><div class="ms-de">Product + cash commitments locked · Keller & Jahan lead · Packages finalized May 4</div></div><span class="ms-tg tag-prog">In Progress</span></div>
+        <div class="ms-item"><div class="ms-dt">MAY 17<br>2026</div><div><div class="ms-nm">★ DIT LA — Event Executed</div><div class="ms-de">Dead Internet Theory Los Angeles · Contributing artists briefed · FWB marketing · Full team on ground</div></div><span class="ms-tg tag-up">Upcoming</span></div>
+        <div class="ms-item"><div class="ms-dt">MAY 27<br>2026</div><div><div class="ms-nm">Seed Investor Outreach — 2 × $25K</div><div class="ms-de">Materials seeded by Keller & Jahan · Ongoing investor conversations · Close deadline: August 2026</div></div><span class="ms-tg tag-prog">In Progress</span></div>
+        <div class="ms-item"><div class="ms-dt">JUN 2<br>2026</div><div><div class="ms-nm">DIT NYC — Travel + Scout</div><div class="ms-de">2-day NYC trip · Rhizome visit · Sponsor meetings · Venue scout</div></div><span class="ms-tg tag-up">Upcoming</span></div>
+        <div class="ms-item"><div class="ms-dt">JUN 11<br>2026</div><div><div class="ms-nm">NYC Sponsorship Sprint — Closed</div><div class="ms-de">Sprint runs June 1–11 · NYC product sponsor commitments locked · Keller & Jahan lead</div></div><span class="ms-tg tag-up">Upcoming</span></div>
+        <div class="ms-item"><div class="ms-dt">JUN 16<br>2026</div><div><div class="ms-nm">★ DIT NYC — Event Executed</div><div class="ms-de">Dead Internet Theory New York · Full team · Rhizome co-presenter · Travel Jun 13, return Jun 19</div></div><span class="ms-tg tag-up">Upcoming</span></div>
+        <div class="ms-item"><div class="ms-dt">JULY<br>2026</div><div><div class="ms-nm">FWB Fest Activation</div><div class="ms-de">Brand presence at FWB Fest · DIT NYC 2 sponsorship build begins · Seed round final push</div></div><span class="ms-tg tag-plan">Planning</span></div>
+        <div class="ms-item"><div class="ms-dt">JULY<br>2026</div><div><div class="ms-nm">NYC Long-Form Artist Lineup Finalized</div><div class="ms-de">Full contributor list closed · Possible recycled DIT LA/NYC artists + Rhizome roster picks</div></div><span class="ms-tg tag-plan">Planning</span></div>
+        <div class="ms-item"><div class="ms-dt">AUG<br>2026</div><div><div class="ms-nm">★ Seed Round — CLOSED</div><div class="ms-de">$50K+ SAFE target · 2 × $25K investors · Paizley + Keller + Jahan lead · Hard deadline</div></div><span class="ms-tg tag-tgt">Target</span></div>
+        <div class="ms-item"><div class="ms-dt">AUG<br>2026</div><div><div class="ms-nm">★ DIT NYC 2 — Executed</div><div class="ms-de">Return to NYC · Second DIT activation · Long-form game final prep · Event costs offset by sponsorship</div></div><span class="ms-tg tag-plan">Planning</span></div>
+        <div class="ms-item"><div class="ms-dt">SEPT<br>2026</div><div><div class="ms-nm">★ NYC Long-Form Game — Launch (Paid)</div><div class="ms-de">Fully paid event · No required IRL production budget · Player management system live</div></div><span class="ms-tg tag-tgt">Target</span></div>
+        <div class="ms-item"><div class="ms-dt">SEPT<br>2026</div><div><div class="ms-nm">Revenue Target — $30,000</div><div class="ms-de">200 players × $150 = $30,000 · Self-funded from this point · Validates paid-event model</div></div><span class="ms-tg tag-tgt">$30K</span></div>
+        <div class="ms-item"><div class="ms-dt">LATE<br>2026</div><div><div class="ms-nm">Series A — Process Begins</div><div class="ms-de">Deck + outreach initiated · Built on proven event + revenue model · DIT + long-form IP established</div></div><span class="ms-tg tag-road">Roadmap</span></div>
+      </div>
+
+    </div></div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════
+     MODAL 3 — OPERATIONAL ROADMAP
+════════════════════════════════ -->
+<div class="modal-wrap" id="modal-roadmap" onclick="handleOvClick(event,'roadmap')">
+  <div class="modal">
+    <div class="modal-head">
+      <div><div class="modal-eyebrow">Found Him · 03</div><div class="modal-title">Operational Roadmap</div></div>
+      <button class="modal-close" onclick="closeModal('roadmap')">×</button>
+    </div>
+    <div class="modal-body"><div class="modal-content-pane">
+
+      <div class="dsec-title">Operational Roadmap</div>
+      <div class="dsec-sub">May – September 2026 &nbsp;·&nbsp; Week-by-week with full team responsibilities</div>
+      <div class="drule"></div>
+
+      <div class="rm-phase">
+        <div class="rm-ph-tt">── MAY 2026 · $11,000 ──</div>
+        <div class="rm-week"><div class="rm-wl">W1<br>May 1–7</div><div><div class="rm-ac">Pay operations. Secure DIT LA venue. Brief contributing artists. Seed sponsorship contacts. Launch DIT website. Finalize game development plan. Game dev v1 review.</div><div class="resp-grid"><div class="resp-col"><strong>Paizley</strong>Pay bills · Secure venue · Event bible · Artist brief · Sponsorship sheet · Hire producer · Social assets</div><div class="resp-col"><strong>Alec & Shawn</strong>DIT event website · Partiful · App polish (TestFlight)</div><div class="resp-col"><strong>Keller & Jahan</strong>Sponsor outreach list (LA + NYC) · Outline needs · Send materials</div></div></div></div>
+        <div class="rm-week"><div class="rm-wl">W2<br>May 8–15</div><div><div class="rm-ac">Game dev continues. Test player management system. Finalize product + donation sponsors. Create content capture/asset plan. Investor talks ongoing — close deadline August.</div><div class="resp-grid"><div class="resp-col"><strong>Paizley</strong>Game dev oversight · Event production · Sponsorship closing · Balance check · Run of show</div><div class="resp-col"><strong>Alec & Shawn</strong>Game build + app polish · Player management test · Tech list</div><div class="resp-col"><strong>Keller & Jahan</strong>Sponsorship closing · Investor talks</div></div></div></div>
+        <div class="rm-week"><div class="rm-wl">W3<br>May 17–22</div><div><div class="rm-ac">★ DIT LA EVENT (May 17). Post-event debrief. Seed recap assets to socials. Update all pitch materials. NYC planning begins. Meet Rhizome. Seed materials to Replit + Kid Super.</div><div class="resp-grid"><div class="resp-col"><strong>Paizley</strong>Run event · Debrief · Update pitch decks · Meet Rhizome · Finalize NYC constraints</div><div class="resp-col"><strong>Alec & Shawn</strong>Recap asset review · NYC tech needs + budget</div><div class="resp-col"><strong>Keller & Jahan</strong>Investor talks · NYC sponsorship begins</div></div></div></div>
+        <div class="rm-week"><div class="rm-wl">W4<br>May 25–31</div><div><div class="rm-ac">Seed WS investor materials for 2 × $25K targets. Finalize NYC artist outreach list. Update Rhizome co-presenter materials.</div><div class="resp-grid"><div class="resp-col"><strong>Paizley</strong>Investor push · NYC prep · Artist selection</div><div class="resp-col"><strong>Alec & Shawn</strong>NYC build prep</div><div class="resp-col"><strong>Keller & Jahan</strong>Seed materials to 2 × $25K targets</div></div></div></div>
+      </div>
+
+      <div class="rm-phase">
+        <div class="rm-ph-tt">── JUNE 2026 · $9,000 ──</div>
+        <div class="rm-week"><div class="rm-wl">W1<br>Jun 1–7</div><div><div class="rm-ac">NYC sponsorship sprint opens (Jun 1–11). Finalize DIT NYC social assets. 2-day NYC trip: venue scout, Rhizome, potential sponsors.</div><div class="resp-grid"><div class="resp-col"><strong>Paizley</strong>Sponsor sprint · NYC venue scout · Travel</div><div class="resp-col"><strong>Alec & Shawn</strong>Social asset polish</div><div class="resp-col"><strong>Keller & Jahan</strong>NYC sponsor meetings</div></div></div></div>
+        <div class="rm-week"><div class="rm-wl">W2<br>Jun 8–14</div><div><div class="rm-ac">Seed DIT NYC event info via social (Jun 8). Sponsorship sprint ends (Jun 11). Artist contributor list closes (Jun 12). Create assets, distribute.</div><div class="resp-grid"><div class="resp-col"><strong>Paizley</strong>Content seeding · Artist asset distribution</div><div class="resp-col"><strong>Alec & Shawn</strong>Asset creation</div><div class="resp-col"><strong>Keller & Jahan</strong>Sponsorship sprint close</div></div></div></div>
+        <div class="rm-week"><div class="rm-wl">W3<br>Jun 13–19</div><div><div class="rm-ac">Travel to NYC (Jun 13). ★ DIT NYC EVENT (Jun 16). Return to LA (Jun 19).</div><div class="resp-grid"><div class="resp-col"><strong>Paizley</strong>Travel · Run DIT NYC · Return</div><div class="resp-col"><strong>Alec & Shawn</strong>Full NYC activation support</div><div class="resp-col"><strong>Keller & Jahan</strong>Full NYC activation support</div></div></div></div>
+        <div class="rm-week"><div class="rm-wl">W4<br>Jun 22–30</div><div><div class="rm-ac">Update assets + pitch materials. Review FWB FEST plans. Final seed investor close push. Roadmap adjustments.</div><div class="resp-grid"><div class="resp-col"><strong>Paizley</strong>Deck updates · FWB plan · Investor close</div><div class="resp-col"><strong>Alec & Shawn</strong>Asset updates</div><div class="resp-col"><strong>Keller & Jahan</strong>Seed close push</div></div></div></div>
+      </div>
+
+      <div class="rm-phase">
+        <div class="rm-ph-tt">── JULY 2026 · $7,000 ──</div>
+        <div class="rm-week"><div class="rm-wl">Full Month</div><div><div class="rm-ac">FWB Fest activation. DIT NYC 2 sponsorship build. Close seed round. Artist acquisition for NYC long-form game. NYC long-form game sponsorship. Create calendar + budget for remaining phases.</div><div class="resp-grid"><div class="resp-col"><strong>Paizley</strong>FWB Fest · Seed close · Long-form artist acquisition · Roadmap adjustments</div><div class="resp-col"><strong>Alec & Shawn</strong>Long-form game build begins · App development continues</div><div class="resp-col"><strong>Keller & Jahan</strong>Seed close · NYC DIT 2 sponsors · Long-form sponsorship</div></div></div></div>
+      </div>
+
+      <div class="rm-phase">
+        <div class="rm-ph-tt">── AUGUST 2026 · $3,000 remaining ──</div>
+        <div class="rm-week"><div class="rm-wl">Full Month</div><div><div class="rm-ac">Return to NYC for DIT 2. Produce event — costs offset by sponsorship. Long-form game final prep. Seed round must close this month.</div><div class="resp-grid"><div class="resp-col"><strong>Paizley</strong>NYC DIT 2 execution · Long-form final prep · Seed close</div><div class="resp-col"><strong>Alec & Shawn</strong>Game build · Event tech</div><div class="resp-col"><strong>Keller & Jahan</strong>NYC DIT 2 support · Seed close</div></div></div></div>
+      </div>
+
+      <div class="rm-phase">
+        <div class="rm-ph-tt">── SEPTEMBER 2026 · Self-funded ──</div>
+        <div class="rm-week"><div class="rm-wl">Full Month</div><div><div class="rm-ac">★ NYC Long-Form Game debut (PAID). Target: 200 players × $150 = $30,000. No required IRL production budget. Player management system handles ticketing. Series A process begins.</div><div class="resp-grid"><div class="resp-col"><strong>Paizley</strong>Long-form launch · Player revenue · Series A prep</div><div class="resp-col"><strong>Alec & Shawn</strong>Game systems · Tech · Live support</div><div class="resp-col"><strong>Keller & Jahan</strong>Long-form debut support · Series A outreach</div></div></div></div>
+      </div>
+
+      <div style="margin-top: 32px">
+        <div class="dsec-title" style="font-size:26px">Responsibilities Matrix</div>
+        <div class="dsec-sub">15 workstreams · Who leads, who supports, when it's due</div>
+        <table class="rmat">
+          <thead><tr><th style="width:36%">Workstream</th><th>Paizley</th><th>Alec & Shawn</th><th>Keller & Jahan</th><th>Deadline</th></tr></thead>
+          <tbody>
+            <tr><td>Event Production (DIT LA & NYC)</td><td class="tl">LEAD</td><td class="ts">Support</td><td class="tdx">—</td><td class="tdl">May 17 / Jun 16</td></tr>
+            <tr><td>DIT Website & App</td><td class="ts">Oversight</td><td class="tl">LEAD</td><td class="tdx">—</td><td class="tdl">May 5 / Ongoing</td></tr>
+            <tr><td>Game Development</td><td class="ts">Direction</td><td class="tl">LEAD</td><td class="tdx">—</td><td class="tdl">Continuous</td></tr>
+            <tr><td>Sponsorship — LA</td><td class="ts">Package</td><td class="tdx">—</td><td class="tl">LEAD</td><td class="tdl">May 4 → Sprint</td></tr>
+            <tr><td>Sponsorship — NYC</td><td class="ts">Strategy</td><td class="tdx">—</td><td class="tl">LEAD</td><td class="tdl">Jun 1–11</td></tr>
+            <tr><td>Investor Relations (Seed)</td><td class="tl">LEAD</td><td class="tdx">—</td><td class="ts">Support</td><td class="tdl">August 2026</td></tr>
+            <tr><td>Artist Briefs & Contracts</td><td class="tl">LEAD</td><td class="tdx">—</td><td class="tdx">—</td><td class="tdl">May 4 / Jun 12</td></tr>
+            <tr><td>Social Assets & Content</td><td class="tl">LEAD</td><td class="ts">Support</td><td class="tdx">—</td><td class="tdl">Ongoing</td></tr>
+            <tr><td>Pitch Deck Updates</td><td class="tl">LEAD</td><td class="tdx">—</td><td class="tdx">—</td><td class="tdl">Post-event</td></tr>
+            <tr><td>FWB Fest Activation</td><td class="tl">LEAD</td><td class="ts">Support</td><td class="ts">Support</td><td class="tdl">July 2026</td></tr>
+            <tr><td>NYC Long-Form Game Build</td><td class="ts">Direction</td><td class="tl">LEAD</td><td class="tdx">—</td><td class="tdl">Sept Launch</td></tr>
+            <tr><td>NYC Long-Form Sponsorship</td><td class="ts">Strategy</td><td class="tdx">—</td><td class="tl">LEAD</td><td class="tdl">August 2026</td></tr>
+            <tr><td>Long-Form Artist Acquisition</td><td class="tl">LEAD</td><td class="tdx">—</td><td class="ts">Support</td><td class="tdl">July 2026</td></tr>
+            <tr><td>Seed Round Close (2 × $25K)</td><td class="tl">LEAD</td><td class="tdx">—</td><td class="tl">LEAD</td><td class="tdl">August 2026</td></tr>
+            <tr><td>Series A Prep</td><td class="tl">LEAD</td><td class="tdx">—</td><td class="ts">Support</td><td class="tdl">Late 2026</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div></div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════
+     MODAL 4 — THE FULL PLAN
+════════════════════════════════ -->
+<div class="modal-wrap" id="modal-plan" onclick="handleOvClick(event,'plan')">
+  <div class="modal">
+    <div class="modal-head">
+      <div><div class="modal-eyebrow">Found Him · 04</div><div class="modal-title">The Full Plan</div></div>
+      <button class="modal-close" onclick="closeModal('plan')">×</button>
+    </div>
+    <div class="modal-body"><div class="modal-content-pane">
+
+      <div class="dsec-title">The Full Plan</div>
+      <div class="dsec-sub">Every day. Every task. Every owner. May – September 2026.</div>
+      <div class="drule"></div>
+
+      <div class="daily-outer">
+        <div class="dp"><span class="cl">STARTING CAPITAL: $30,000  ·  May 1, 2026
+SEED CLOSE DEADLINE: August 2026  ·  Series A: Late 2026</span>
+<span class="dv">════════════════════════════════════════════════</span>
+
+<span class="mhd">── MAY 2026 ──</span><span class="tk">Budget: $11,000  ·  Balance after: $19,000</span>
+
+<span class="whd">WEEK 1 · May 1–7</span>
+<span class="dy">May 1</span><span class="tk">Pay for operations. Begin purchasing items for DIT LA (venue, computers, activations).</span><span class="tk">Keller + Jahan → create list of potential sponsors for LA and NYC DIT.</span>
+<span class="dy">May 2–3</span><span class="tk">Create event guidelines + brief for contributing artists. Hire event producer. Prepare sponsorship packages.</span>
+<span class="dy">May 4</span><span class="tk">Close outstanding bills with accountant + attorney. Start DIT web build.</span><span class="tk">Send brief to artists for DIT LA. Keller + Jahan → seed sponsorship materials to contacts.</span>
+<span class="dy">May 5</span><span class="tk">Launch DIT website. Prepare sponsorship sheets. Finalize game development plan.</span>
+<span class="dy">May 6</span><span class="tk">Send event materials to FWB (marketing). Create social assets for promo, Partiful, etc.</span><span class="tk">Game dev review v1. App polish (event strategy, TestFlight?).</span>
+<span class="dy">May 7</span><span class="tk">Game dev review v1.</span>
+<span class="rl">Paizley ......... Pay bills · Secure venue · Event bible · Artist brief · Sponsorship sheet · Hire producer · Social assets</span><span class="rl">Alec & Shawn ... DIT event website · Partiful setup · App polish</span><span class="rl">Keller & Jahan . Sponsor outreach list (LA + NYC) · Outline needs · Send materials</span>
+
+<span class="whd">WEEK 2 · May 8–15</span>
+<span class="dy">May 8–15</span><span class="tk">Game dev review continues. Test player management system. Event production ongoing.</span><span class="tk">Finalize sponsorship (product + donations). Create content capture / asset plan.</span><span class="tk">Investor talks ongoing — close deadline August.</span>
+<span class="rl">Paizley / Alec / Shawn ... Game dev · Event production · Tech list · Balance check · Run of show</span><span class="rl">Paizley / Keller / Jahan . Sponsorship closing · Investor talks (deadline: AUGUST)</span>
+
+<span class="whd">WEEK 3 · May 17–22</span>
+<span class="dy">May 17</span><span class="tk">★ DIT LA EVENT ★</span>
+<span class="dy">May 19</span><span class="tk">Review assets. Debrief with Keller + Jahan. Discuss NYC adjustments.</span>
+<span class="dy">May 20</span><span class="tk">Seed assets to socials. Update pitch + sponsorship materials. Create artist outreach materials.</span>
+<span class="dy">May 21</span><span class="tk">Distribute updated materials to Keller + Jahan. Meet with Rhizome.</span><span class="tk">Seed materials to Replit / Kid Super. Dev review: NYC tech needs + adjust budget.</span>
+<span class="dy">May 22</span><span class="tk">Finalize budget, dates, constraints. Update co-presenter materials for Rhizome.</span><span class="tk">Select NYC artist outreach (possible recycle: John · review Rhizome roster).</span>
+<span class="rl">Paizley / Alec / Shawn .. Recap asset review · Update pitch materials · NYC adjustments</span><span class="rl">Keller / Jahan ......... Investor talks · NYC sponsorship</span>
+
+<span class="whd">WEEK 4 · May 25–31</span>
+<span class="dy">May 27</span><span class="tk">Keller + Jahan → seed materials for WS investors (2 × $25K targets).</span>
+
+<span class="dv">────────────────────────────────────────────────</span>
+<span class="mhd">── JUNE 2026 ──</span><span class="tk">Budget: $9,000  ·  Balance after: $10,000</span>
+
+<span class="whd">WEEK 1 · June 1–7</span>
+<span class="dy">Jun 1</span><span class="tk">NYC sponsorship sprint starts. Finalize round 1 social assets for DIT NYC.</span>
+<span class="dy">Jun 2</span><span class="tk">Travel to NYC (2 days). Visit Rhizome. Meet potential sponsors. Venue scout.</span>
+
+<span class="whd">WEEK 2 · June 8–14</span>
+<span class="dy">Jun 8</span><span class="tk">Seed recap + event info via social.</span>
+<span class="dy">Jun 11</span><span class="tk">NYC sponsorship sprint ends.</span>
+<span class="dy">Jun 12</span><span class="tk">Artist contributor list closes. Create assets · Distribute.</span>
+
+<span class="whd">WEEK 3 · June 13–19</span>
+<span class="dy">Jun 13</span><span class="tk">Travel to NYC.</span>
+<span class="dy">Jun 16</span><span class="tk">★ DIT NYC EVENT ★</span>
+<span class="dy">Jun 19</span><span class="tk">Return to LA.</span>
+
+<span class="whd">WEEK 4 · June 22–30</span>
+<span class="dy">Jun 22</span><span class="tk">Update assets + pitch materials. Review plans for FWB FEST.</span>
+<span class="dy">Jun 23</span><span class="tk">Final investor talks for seed round.</span>
+<span class="dy">Jun 24</span><span class="tk">Roadmap adjustments.</span>
+
+<span class="dv">────────────────────────────────────────────────</span>
+<span class="mhd">── JULY 2026 ──</span><span class="tk">Budget: $7,000  ·  Balance after: $3,000</span>
+<span class="tk">FWB Fest activation. DIT NYC 2 sponsorship build. Close seed round.</span><span class="tk">Artist acquisition for NYC long-form game. NYC long-form sponsorship outreach.</span><span class="tk">Create calendar + budget for remaining phases.</span>
+
+<span class="dv">────────────────────────────────────────────────</span>
+<span class="mhd">── AUGUST 2026 ──</span><span class="tk">Budget: $3,000 (remaining balance)  ·  Seed close must happen this month</span>
+<span class="tk">Return to NYC for DIT 2. Produce event — costs offset by sponsorship.</span><span class="tk">Begin long-form game final prep. ★ Seed round closes.</span>
+
+<span class="dv">────────────────────────────────────────────────</span>
+<span class="mhd">── SEPTEMBER 2026 ──</span><span class="tk">Self-funded via player revenue · No external budget required</span>
+<span class="tk">★ NYC Long-Form Game debut (PAID).</span><span class="tk">Target: 200 players × $150 = $30,000 revenue.</span><span class="tk">No required IRL production budget. Player management system handles all ticketing.</span><span class="tk">Series A process begins — Late 2026.</span>
+
+<span class="dv">════════════════════════════════════════════════</span><span class="cl">TOTAL DEPLOYED: $30,000  ·  SEPT REVENUE TARGET: $30,000
+SEED CLOSE: August 2026  ·  SERIES A: Late 2026</span>
         </div>
       </div>
 
-      <div class="team-card">
-        <p class="tc-name">Alec &amp; Shawn</p>
-        <p class="tc-role">Tech / Game Dev</p>
-        <div class="tc-items">
-          <div class="tc-item"><div class="dot d-lead"></div>DIT Website &amp; App</div>
-          <div class="tc-item"><div class="dot d-lead"></div>Game Development</div>
-          <div class="tc-item"><div class="dot d-lead"></div>NYC Long-Form Game Build</div>
-          <div class="tc-item"><div class="dot d-support"></div>Event Production (support)</div>
-          <div class="tc-item"><div class="dot d-support"></div>Social Assets (support)</div>
-        </div>
-      </div>
-
-      <div class="team-card">
-        <p class="tc-name">Keller &amp; Jahan</p>
-        <p class="tc-role">Biz Dev / Partnerships</p>
-        <div class="tc-items">
-          <div class="tc-item"><div class="dot d-lead"></div>Sponsorship — LA Sprint</div>
-          <div class="tc-item"><div class="dot d-lead"></div>Sponsorship — NYC Sprint</div>
-          <div class="tc-item"><div class="dot d-lead"></div>NYC Long-Form Sponsorship</div>
-          <div class="tc-item"><div class="dot d-colead"></div>Seed Round Close (co-lead)</div>
-          <div class="tc-item"><div class="dot d-support"></div>Investor Relations (support)</div>
-        </div>
-      </div>
-
-    </div>
+    </div></div>
   </div>
 </div>
 
-<div id="math">
-  <div class="wrap fi">
-    <div class="rev-card">
-      <div class="rev-top">
-        <span class="rev-label">Longform Test Revenue</span>
-        <span class="rev-eq">
-          <span class="re-num">200</span>
-          <span class="re-dim"> players × </span>
-          <span class="re-num">$150</span>
-          <span class="re-dim"> = </span>
-          <span class="re-result">$30,000</span>
-        </span>
-      </div>
-      <p class="rev-note">Player-fee funded only. Zero production budget required. Self-sustaining from launch. Proof of concept for Series A.</p>
-    </div>
-  </div>
-</div>
 
-<div id="cta">
-  <div id="cta-glow"></div>
-  <p class="cta-eyebrow">WORKSUCKS LLC · Seed Round · For Jonny Gordon</p>
-  <h2 class="cta-needs-title">HELP<br>WE'RE POOR <span>;(</span></h2>
-  <div class="funding-grid">
-    <div class="fund-card urgent">
-      <div class="fund-date">April 30</div>
-      <div class="fund-amount">$5,000</div>
-      <div class="fund-tag t-urgent">Due Now</div>
-    </div>
-    <div class="fund-card soon">
-      <div class="fund-date">May 4</div>
-      <div class="fund-amount">$6,000</div>
-      <div class="fund-tag t-soon">Coming Up</div>
-    </div>
-    <div class="fund-card mid">
-      <div class="fund-date">May 26</div>
-      <div class="fund-amount">$9,000</div>
-      <div class="fund-tag t-mid">Planned</div>
-    </div>
-    <div class="fund-card later">
-      <div class="fund-date">June 25</div>
-      <div class="fund-amount">$10,000</div>
-      <div class="fund-tag t-later">Final Tranche</div>
-    </div>
-  </div>
-  <p class="fund-total">Total investment: &nbsp;<span>$30,000</span></p>
-</div>
 
-<footer>WORKSUCKS LLC &nbsp;·&nbsp; FOR JONNY GORDON ONLY &nbsp;·&nbsp; MAY–SEPT 2026</footer>
 
 <script>
-const io = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (!entry.isIntersecting) return;
-    entry.target.classList.add('on');
-    io.unobserve(entry.target);
+
+/* ── SPOT CONFIG
+   x, y = feet position in the 1920×1080 scene.
+   Adjust these once you see where they land. ── */
+const SPOTS = [
+  { id: 'funds',      img: 'jonny-1.png', modal: 'funds',      x: 165,  y: 380  },
+  { id: 'milestones', img: 'jonny-2.png', modal: 'milestones', x: 1810, y: 260  },
+  { id: 'roadmap',    img: 'jonny-3.png', modal: 'roadmap',    x: 820,  y: 720  },
+  { id: 'plan',       img: 'jonny-4.png', modal: 'plan',       x: 1620, y: 970  },
+];
+
+let foundCount = 0;
+
+/* ── GATE ── */
+function enterScene() {
+  const gate = document.getElementById('gate');
+  gate.classList.add('gone');
+  setTimeout(() => {
+    gate.style.display = 'none';
+    document.getElementById('hud').classList.add('show');
+    document.getElementById('drag-nudge').classList.add('show');
+    setTimeout(() => document.getElementById('drag-nudge').classList.remove('show'), 5000);
+  }, 720);
+}
+
+/* ── BUILD SPOTS ── */
+const scene = document.getElementById('scene');
+
+SPOTS.forEach(spot => {
+  const el  = document.createElement('div');
+  el.className = 'jonny-spot';
+  el.id        = 'spot-' + spot.id;
+  el.style.left = spot.x + 'px';
+  el.style.top  = spot.y + 'px';
+
+  const img = document.createElement('img');
+  img.src = './assets/' + spot.img;
+  img.alt = '';
+  el.appendChild(img);
+
+  el.addEventListener('click', e => {
+    e.stopPropagation();
+    if (panner.wasDrag) return;
+    triggerSpot(spot.id, spot.modal);
   });
-}, { threshold: 0.12 });
-document.querySelectorAll('.fi').forEach(el => io.observe(el));
+
+  scene.appendChild(el);
+});
+
+/* ── TRIGGER SPOT ── */
+function triggerSpot(id, modalId) {
+  const el = document.getElementById('spot-' + id);
+
+  el.classList.add('bursting');
+  setTimeout(() => el.classList.remove('bursting'), 500);
+
+  if (!el.classList.contains('found')) {
+    el.classList.add('found');
+    foundCount++;
+    document.getElementById('found-count').textContent = foundCount;
+    if (foundCount >= 4) {
+      setTimeout(() => document.getElementById('all-found').classList.add('show'), 800);
+    }
+  }
+
+  openModal(modalId);
+}
+
+/* ── HINT ── */
+function showHint() {
+  document.querySelectorAll('.jonny-spot:not(.found)').forEach(el => el.classList.add('hinting'));
+  setTimeout(() => document.querySelectorAll('.jonny-spot').forEach(el => el.classList.remove('hinting')), 2500);
+}
+
+/* ── MODAL ── */
+function openModal(id) {
+  document.getElementById('modal-' + id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById('modal-' + id).classList.remove('open');
+}
+function handleOvClick(e, id) {
+  if (e.target === e.currentTarget) closeModal(id);
+}
+
+/* ── PAN ENGINE ── */
+const panner = (() => {
+  const wrap = document.getElementById('scene-wrap');
+  const sc   = document.getElementById('scene');
+  const W = 1920, H = 1080;
+
+  let x = 0, y = 0, vx = 0, vy = 0;
+  let startX = 0, startY = 0, downX = 0, downY = 0;
+  let dragging = false, rafId = null, _wasDrag = false;
+
+  function clamp(v, mn, mx) { return Math.max(mn, Math.min(mx, v)); }
+
+  function setPos(nx, ny) {
+    const minX = Math.min(0, wrap.clientWidth  - W);
+    const minY = Math.min(0, wrap.clientHeight - H);
+    x = clamp(nx, minX, 0);
+    y = clamp(ny, minY, 0);
+    sc.style.transform = `translate(${x}px,${y}px)`;
+  }
+
+  function center() {
+    const minX = Math.min(0, wrap.clientWidth  - W);
+    const minY = Math.min(0, wrap.clientHeight - H);
+    setPos(minX / 2, minY / 2);
+  }
+  center();
+  window.addEventListener('resize', center);
+
+  function onDown(cx, cy) {
+    dragging = true; _wasDrag = false;
+    startX = cx - x; startY = cy - y;
+    downX = cx; downY = cy;
+    vx = vy = 0;
+    cancelAnimationFrame(rafId);
+    sc.style.transition = 'none';
+  }
+  function onMove(cx, cy) {
+    if (!dragging) return;
+    if (Math.abs(cx - downX) > 5 || Math.abs(cy - downY) > 5) {
+      _wasDrag = true;
+      document.getElementById('drag-nudge').classList.remove('show');
+    }
+    vx = cx - (startX + x);
+    vy = cy - (startY + y);
+    setPos(cx - startX, cy - startY);
+  }
+  function onUp() {
+    if (!dragging) return;
+    dragging = false;
+    momentum();
+  }
+  function momentum() {
+    vx *= 0.88; vy *= 0.88;
+    if (Math.abs(vx) < 0.4 && Math.abs(vy) < 0.4) return;
+    setPos(x + vx, y + vy);
+    rafId = requestAnimationFrame(momentum);
+  }
+
+  wrap.addEventListener('mousedown',  e => onDown(e.clientX, e.clientY));
+  window.addEventListener('mousemove',e => onMove(e.clientX, e.clientY));
+  window.addEventListener('mouseup',  () => onUp());
+  wrap.addEventListener('touchstart', e => { const t=e.touches[0]; onDown(t.clientX,t.clientY); }, { passive: true });
+  wrap.addEventListener('touchmove',  e => { const t=e.touches[0]; onMove(t.clientX,t.clientY); e.preventDefault(); }, { passive: false });
+  wrap.addEventListener('touchend',   () => onUp());
+
+  return { get wasDrag() { return _wasDrag; } };
+})();
+
 </script>
 </body>
 </html>
